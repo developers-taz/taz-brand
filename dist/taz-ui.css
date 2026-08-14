@@ -1,0 +1,543 @@
+/* ==========================================================================
+   TAZ UI — Capa de componentes
+   CSS plano, sin dependencias. Funciona igual en Angular, React, Vue,
+   Jinja/Bootstrap o HTML suelto porque son solo clases.
+
+   Requiere tokens.css cargado antes.
+   Todas las clases llevan prefijo `taz-` para no chocar con Bootstrap,
+   Tailwind ni Angular Material.
+
+   Índice
+     1. Base y tipografía
+     2. Botones
+     3. Formularios — texto, textarea, combobox, checkbox, radio, switch
+     4. Tablas
+     5. Paginación
+     6. Insignias
+     7. Alertas
+     8. Tarjetas y métricas
+     9. Pestañas
+    10. Spinner (la espiral)
+    11. Utilidades de disposición
+   ========================================================================== */
+
+/* --- 1. Base y tipografía ------------------------------------------------ */
+
+.taz-body {
+  background: var(--taz-bg);
+  color: var(--taz-text);
+  font-family: var(--taz-font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.taz-h1 { font-family: var(--taz-font-display); font-size: 32px; font-weight: 700; letter-spacing: -.025em; line-height: 1.15; text-wrap: balance; margin: 0; }
+.taz-h2 { font-family: var(--taz-font-display); font-size: 24px; font-weight: 700; letter-spacing: -.02em;  line-height: 1.2;  text-wrap: balance; margin: 0; }
+.taz-h3 { font-family: var(--taz-font-display); font-size: 18px; font-weight: 600; letter-spacing: -.01em;  line-height: 1.3;  margin: 0; }
+
+.taz-eyebrow {
+  font-family: var(--taz-font-mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--taz-text-muted);
+}
+
+.taz-muted { color: var(--taz-text-muted); }
+.taz-mono  { font-family: var(--taz-font-mono); }
+.taz-num   { font-variant-numeric: tabular-nums; }
+
+.taz-link { color: var(--taz-primary-text); text-decoration: none; border-bottom: 1px solid transparent; }
+.taz-link:hover { border-bottom-color: currentColor; }
+.taz-link:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); border-radius: 2px; }
+
+/* Regla dorada bajo un encabezado de sección: la firma de la marca.
+   Úsala una vez por pantalla, no en cada título. */
+.taz-rule-accent {
+  border: 0;
+  height: 3px;
+  width: 44px;
+  background: var(--taz-accent);
+  border-radius: 2px;
+  margin: 12px 0 0;
+}
+
+/* --- 2. Botones ---------------------------------------------------------- */
+
+.taz-btn {
+  --_bg: transparent;
+  --_fg: var(--taz-text);
+  --_bd: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--taz-font-body);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 10px 18px;
+  border: 1px solid var(--_bd);
+  border-radius: var(--taz-radius);
+  background: var(--_bg);
+  color: var(--_fg);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color .14s ease, border-color .14s ease, color .14s ease;
+}
+.taz-btn:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+.taz-btn:disabled,
+.taz-btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+
+.taz-btn--primary          { --_bg: var(--taz-primary); --_fg: var(--taz-on-primary); }
+.taz-btn--primary:hover:not(:disabled)  { --_bg: var(--taz-primary-hover); }
+.taz-btn--primary:active:not(:disabled) { --_bg: var(--taz-primary-active); }
+
+/* Acento dorado: la acción destacada de la pantalla. Una sola por vista. */
+.taz-btn--accent           { --_bg: var(--taz-accent); --_fg: var(--taz-on-accent); }
+.taz-btn--accent:hover:not(:disabled)  { --_bg: var(--taz-accent-hover); }
+
+.taz-btn--ghost            { --_fg: var(--taz-primary-text); --_bd: var(--taz-border-strong); }
+.taz-btn--ghost:hover:not(:disabled)    { --_bg: var(--taz-surface-sunk); }
+
+.taz-btn--subtle           { --_bg: var(--taz-primary-soft); --_fg: var(--taz-primary-text); }
+.taz-btn--subtle:hover:not(:disabled)   { --_bd: var(--taz-primary); }
+
+.taz-btn--danger           { --_bg: var(--taz-danger); --_fg: #fff; }
+.taz-btn--danger:hover:not(:disabled)   { filter: brightness(.92); }
+
+.taz-btn--quiet            { --_fg: var(--taz-text-muted); }
+.taz-btn--quiet:hover:not(:disabled)    { --_bg: var(--taz-surface-sunk); --_fg: var(--taz-text); }
+
+.taz-btn--sm  { font-size: 13px;   padding: 6px 12px; gap: 6px; }
+.taz-btn--lg  { font-size: 16px;   padding: 13px 24px; }
+.taz-btn--block { display: flex; width: 100%; }
+.taz-btn--icon { padding: 10px; aspect-ratio: 1; }
+.taz-btn--icon.taz-btn--sm { padding: 6px; }
+
+.taz-btn-group { display: inline-flex; }
+.taz-btn-group .taz-btn { border-radius: 0; margin-left: -1px; }
+.taz-btn-group .taz-btn:first-child { border-radius: var(--taz-radius) 0 0 var(--taz-radius); margin-left: 0; }
+.taz-btn-group .taz-btn:last-child  { border-radius: 0 var(--taz-radius) var(--taz-radius) 0; }
+.taz-btn-group .taz-btn:focus-visible { position: relative; z-index: 1; }
+
+/* --- 3. Formularios ------------------------------------------------------ */
+
+/* Bloque etiqueta + control + ayuda. */
+.taz-field { display: flex; flex-direction: column; gap: 6px; }
+
+.taz-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--taz-text);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.taz-label .taz-req { color: var(--taz-danger-text); font-weight: 400; }
+.taz-label .taz-optional { font-weight: 400; font-size: 12px; color: var(--taz-text-muted); }
+
+.taz-input,
+.taz-textarea,
+.taz-select {
+  width: 100%;
+  font-family: var(--taz-font-body);
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: var(--taz-text);
+  background: var(--taz-surface);
+  border: 1px solid var(--taz-border-strong);
+  border-radius: var(--taz-radius);
+  padding: 9px 12px;
+  transition: border-color .14s ease, box-shadow .14s ease;
+}
+.taz-input::placeholder,
+.taz-textarea::placeholder { color: var(--taz-text-muted); }
+
+.taz-input:hover:not(:disabled):not(:focus),
+.taz-textarea:hover:not(:disabled):not(:focus),
+.taz-select:hover:not(:disabled):not(:focus) { border-color: var(--taz-slate-400); }
+
+.taz-input:focus,
+.taz-textarea:focus,
+.taz-select:focus {
+  outline: none;
+  border-color: var(--taz-primary);
+  box-shadow: var(--taz-focus-ring);
+}
+
+.taz-input:disabled,
+.taz-textarea:disabled,
+.taz-select:disabled {
+  background: var(--taz-surface-sunk);
+  color: var(--taz-text-muted);
+  cursor: not-allowed;
+}
+
+.taz-input[readonly] { background: var(--taz-surface-sunk); }
+
+.taz-textarea { resize: vertical; min-height: 92px; }
+
+.taz-input--sm, .taz-select--sm { font-size: 13px; padding: 6px 10px; }
+.taz-input--mono { font-family: var(--taz-font-mono); }
+
+/* Combobox. La flecha va como background-image porque un <select> no admite
+   pseudo-elementos; se redefine por tema para que el trazo siga al texto. */
+:root {
+  --taz-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%236c7788' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --taz-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%2394a0af' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+}
+:root[data-theme="dark"] {
+  --taz-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%2394a0af' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.taz-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 34px;
+  background-image: var(--taz-chevron);
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
+}
+.taz-select[multiple] {
+  background-image: none;
+  padding-right: 12px;
+  cursor: default;
+}
+/* El menú desplegable lo pinta el sistema: sin estas dos líneas queda
+   texto claro sobre fondo claro en Windows con tema oscuro. */
+.taz-select option { background: var(--taz-surface); color: var(--taz-text); }
+
+/* Grupo con prefijo/sufijo: $ , %, .cl, botón de búsqueda… */
+.taz-input-group { display: flex; align-items: stretch; }
+.taz-input-group > .taz-input,
+.taz-input-group > .taz-select { border-radius: 0; flex: 1; min-width: 0; }
+.taz-input-group > :first-child { border-radius: var(--taz-radius) 0 0 var(--taz-radius); }
+.taz-input-group > :last-child  { border-radius: 0 var(--taz-radius) var(--taz-radius) 0; }
+.taz-input-group > * + * { margin-left: -1px; }
+.taz-input-group > .taz-input:focus,
+.taz-input-group > .taz-select:focus { position: relative; z-index: 1; }
+.taz-affix {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-family: var(--taz-font-mono);
+  font-size: 13px;
+  color: var(--taz-text-muted);
+  background: var(--taz-surface-sunk);
+  border: 1px solid var(--taz-border-strong);
+  white-space: nowrap;
+}
+
+.taz-hint  { font-size: 12.5px; color: var(--taz-text-muted); }
+.taz-error { font-size: 12.5px; color: var(--taz-danger-text); font-weight: 500; }
+
+/* Estado inválido. Aplicar en el control, no en el contenedor. */
+.taz-input.is-invalid,
+.taz-textarea.is-invalid,
+.taz-select.is-invalid { border-color: var(--taz-danger); }
+.taz-input.is-invalid:focus,
+.taz-textarea.is-invalid:focus,
+.taz-select.is-invalid:focus { box-shadow: 0 0 0 3px rgb(201 58 56 / .3); }
+
+/* Casilla y radio */
+.taz-check { display: inline-flex; align-items: flex-start; gap: 9px; cursor: pointer; font-size: 14.5px; }
+.taz-check input[type="checkbox"],
+.taz-check input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 17px;
+  height: 17px;
+  margin: 2px 0 0;
+  border: 1px solid var(--taz-border-strong);
+  background: var(--taz-surface);
+  cursor: pointer;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+.taz-check input[type="checkbox"] { border-radius: 3px; }
+.taz-check input[type="radio"]    { border-radius: 50%; }
+.taz-check input:hover:not(:disabled) { border-color: var(--taz-primary); }
+.taz-check input:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+.taz-check input:checked { background: var(--taz-primary); border-color: var(--taz-primary); }
+.taz-check input[type="checkbox"]:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='9' viewBox='0 0 11 9' fill='none'%3E%3Cpath d='M1 4.6 4 7.6 10 1.4' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.taz-check input[type="radio"]:checked {
+  box-shadow: inset 0 0 0 3px var(--taz-surface);
+}
+.taz-check input:disabled { opacity: .5; cursor: not-allowed; }
+.taz-check input:disabled + span { color: var(--taz-text-muted); }
+
+/* Interruptor */
+.taz-switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14.5px; }
+.taz-switch input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 38px;
+  height: 22px;
+  border-radius: 99px;
+  background: var(--taz-slate-300);
+  position: relative;
+  cursor: pointer;
+  transition: background-color .16s ease;
+}
+.taz-switch input::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform .16s ease;
+}
+.taz-switch input:checked { background: var(--taz-primary); }
+.taz-switch input:checked::after { transform: translateX(16px); }
+.taz-switch input:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+.taz-switch input:disabled { opacity: .5; cursor: not-allowed; }
+
+/* --- 4. Tablas ----------------------------------------------------------- */
+
+/* El contenedor es obligatorio: mantiene el desborde horizontal dentro
+   de la tabla en vez de romper el ancho de la página. */
+.taz-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--taz-border);
+  border-radius: var(--taz-radius-lg);
+  background: var(--taz-surface);
+}
+
+.taz-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.taz-table thead th {
+  text-align: left;
+  font-family: var(--taz-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--taz-text-muted);
+  background: var(--taz-surface-sunk);
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--taz-border);
+  white-space: nowrap;
+}
+
+.taz-table tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--taz-border);
+  vertical-align: middle;
+}
+.taz-table tbody tr:last-child td { border-bottom: 0; }
+
+.taz-table tfoot td {
+  padding: 12px 16px;
+  border-top: 1px solid var(--taz-border-strong);
+  font-weight: 600;
+  background: var(--taz-surface-sunk);
+}
+
+/* Columnas numéricas: alineadas a la derecha y con cifras de ancho fijo
+   para que los dígitos se apilen en columna. */
+.taz-table .taz-num,
+.taz-table th.taz-num { text-align: right; font-variant-numeric: tabular-nums; }
+.taz-table .taz-col-center { text-align: center; }
+
+.taz-table--striped tbody tr:nth-child(even) { background: var(--taz-bg-subtle); }
+.taz-table--hover   tbody tr:hover { background: var(--taz-primary-soft); }
+.taz-table--compact thead th { padding: 8px 12px; }
+.taz-table--compact tbody td { padding: 7px 12px; }
+
+/* Encabezado fijo. Requiere altura máxima en el contenedor:
+   <div class="taz-table-wrap" style="max-height:420px;overflow-y:auto"> */
+.taz-table--sticky thead th { position: sticky; top: 0; z-index: 2; }
+
+/* Fila seleccionada: barra azul a la izquierda, sin desplazar el contenido. */
+.taz-table tbody tr.is-selected { background: var(--taz-primary-soft); }
+.taz-table tbody tr.is-selected td:first-child { box-shadow: inset 3px 0 0 var(--taz-primary); }
+
+.taz-table__empty {
+  padding: 44px 16px;
+  text-align: center;
+  color: var(--taz-text-muted);
+  font-size: 14px;
+}
+
+/* --- 5. Paginación ------------------------------------------------------- */
+
+.taz-pagination { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.taz-pagination__info {
+  font-size: 13px;
+  color: var(--taz-text-muted);
+  margin-right: auto;
+  font-variant-numeric: tabular-nums;
+}
+.taz-page {
+  min-width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 9px;
+  font-size: 13.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--taz-text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--taz-radius);
+  cursor: pointer;
+  text-decoration: none;
+}
+.taz-page:hover:not(:disabled):not(.is-active) { background: var(--taz-surface-sunk); }
+.taz-page:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+.taz-page.is-active { background: var(--taz-primary); color: var(--taz-on-primary); font-weight: 600; }
+.taz-page:disabled { opacity: .4; cursor: not-allowed; }
+
+/* --- 6. Insignias -------------------------------------------------------- */
+
+.taz-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--taz-font-mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: 99px;
+  white-space: nowrap;
+  background: var(--taz-surface-sunk);
+  color: var(--taz-text-muted);
+}
+.taz-badge--brand   { background: var(--taz-primary-soft); color: var(--taz-primary-text); }
+.taz-badge--accent  { background: var(--taz-accent);       color: var(--taz-on-accent); }
+.taz-badge--success { background: var(--taz-success-bg);   color: var(--taz-success-text); }
+.taz-badge--warning { background: var(--taz-warning-bg);   color: var(--taz-warning-text); }
+.taz-badge--danger  { background: var(--taz-danger-bg);    color: var(--taz-danger-text); }
+.taz-badge--info    { background: var(--taz-info-bg);      color: var(--taz-info-text); }
+
+/* Punto de estado para celdas de tabla estrechas. */
+.taz-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; background: currentColor; }
+
+/* --- 7. Alertas ---------------------------------------------------------- */
+
+.taz-alert {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--taz-radius-lg);
+  border: 1px solid;
+  font-size: 14px;
+}
+.taz-alert__title { font-family: var(--taz-font-display); font-weight: 600; font-size: 15px; margin: 0 0 3px; }
+.taz-alert__icon  { font-family: var(--taz-font-mono); font-weight: 700; line-height: 1.5; }
+
+.taz-alert--success { background: var(--taz-success-bg); color: var(--taz-success-text); border-color: color-mix(in srgb, var(--taz-success-text) 30%, transparent); }
+.taz-alert--warning { background: var(--taz-warning-bg); color: var(--taz-warning-text); border-color: color-mix(in srgb, var(--taz-warning-text) 30%, transparent); }
+.taz-alert--danger  { background: var(--taz-danger-bg);  color: var(--taz-danger-text);  border-color: color-mix(in srgb, var(--taz-danger-text)  30%, transparent); }
+.taz-alert--info    { background: var(--taz-info-bg);    color: var(--taz-info-text);    border-color: color-mix(in srgb, var(--taz-info-text)    30%, transparent); }
+
+/* --- 8. Tarjetas y métricas ---------------------------------------------- */
+
+.taz-card {
+  background: var(--taz-surface);
+  border: 1px solid var(--taz-border);
+  border-radius: var(--taz-radius-lg);
+  box-shadow: 0 1px 2px rgb(19 24 32 / .05);
+}
+.taz-card__head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--taz-border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.taz-card__head > :last-child:not(:only-child) { margin-left: auto; }
+.taz-card__body { padding: 20px; }
+.taz-card__foot {
+  padding: 14px 20px;
+  border-top: 1px solid var(--taz-border);
+  background: var(--taz-bg-subtle);
+  border-radius: 0 0 var(--taz-radius-lg) var(--taz-radius-lg);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.taz-stat__label { font-family: var(--taz-font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--taz-text-muted); }
+.taz-stat__value { font-family: var(--taz-font-display); font-size: 32px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.1; margin-top: 4px; }
+.taz-stat__delta { font-family: var(--taz-font-mono); font-size: 12.5px; }
+.taz-stat__delta--up   { color: var(--taz-success-text); }
+.taz-stat__delta--down { color: var(--taz-danger-text); }
+
+.taz-meter { height: 6px; background: var(--taz-surface-sunk); border-radius: 99px; overflow: hidden; }
+.taz-meter > i { display: block; height: 100%; background: var(--taz-primary); border-radius: 99px; }
+.taz-meter--accent > i { background: var(--taz-accent); }
+
+/* --- 9. Pestañas --------------------------------------------------------- */
+
+/* El indicador activo es dorado: es el punto donde la marca se hace visible
+   en pantallas densas sin invadir el resto de la interfaz. */
+.taz-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--taz-border);
+  overflow-x: auto;
+}
+.taz-tab {
+  font-family: var(--taz-font-body);
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--taz-text-muted);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 10px 16px;
+  margin-bottom: -1px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.taz-tab:hover { color: var(--taz-text); }
+.taz-tab:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); border-radius: var(--taz-radius) var(--taz-radius) 0 0; }
+.taz-tab.is-active { color: var(--taz-text); font-weight: 600; border-bottom-color: var(--taz-accent); }
+
+/* --- 10. Spinner --------------------------------------------------------- */
+
+/* Usa el SVG de la espiral (ver README). Los dos arcos giran en sentidos
+   opuestos, que es lo que la vuelve reconocible como Taz. */
+.taz-spinner { display: inline-block; vertical-align: middle; }
+.taz-spinner__outer,
+.taz-spinner__inner { transform-origin: 50% 50%; }
+@media (prefers-reduced-motion: no-preference) {
+  .taz-spinner__outer { animation: taz-spin 2.4s cubic-bezier(.6,.05,.3,.95) infinite; }
+  .taz-spinner__inner { animation: taz-spin 2.4s cubic-bezier(.6,.05,.3,.95) infinite reverse; }
+}
+@keyframes taz-spin { to { transform: rotate(360deg); } }
+
+/* --- 11. Utilidades de disposición --------------------------------------- */
+
+.taz-stack   { display: flex; flex-direction: column; gap: 16px; }
+.taz-stack--sm { gap: 8px; }
+.taz-stack--lg { gap: 28px; }
+.taz-row     { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.taz-row--end { justify-content: flex-end; }
+.taz-grid    { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.taz-divider { border: 0; border-top: 1px solid var(--taz-border); margin: 0; }
+.taz-spacer  { flex: 1 1 auto; }

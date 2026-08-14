@@ -1,0 +1,63 @@
+/* ==========================================================================
+   TAZ — Tema para Tailwind 4
+   Importar DESPUÉS de tailwind y DESPUÉS de tokens.css:
+
+     @import "tailwindcss";
+     @import "../../taz-brand/tokens.css";
+     @import "../../taz-brand/taz.theme.css";
+
+   Habilita utilidades como bg-primary, text-brand-blue-600, border-accent.
+   ========================================================================== */
+
+@theme {
+  --color-brand-blue-50:  #f1f5fb;
+  --color-brand-blue-100: #dee9f5;
+  --color-brand-blue-200: #bfd2ea;
+  --color-brand-blue-300: #97b4da;
+  --color-brand-blue-400: #6c94c8;
+  --color-brand-blue-500: #4477b7;
+  --color-brand-blue-600: #35619b;
+  --color-brand-blue-700: #2a4d7c;
+  --color-brand-blue-800: #21395b;
+  --color-brand-blue-900: #17273d;
+
+  --color-brand-gold-50:  #fdf8e9;
+  --color-brand-gold-100: #faefc7;
+  --color-brand-gold-200: #f5df8e;
+  --color-brand-gold-300: #efcd57;
+  --color-brand-gold-400: #e8bb2f;
+  --color-brand-gold-500: #d3a61c;
+  --color-brand-gold-600: #b08615;
+  --color-brand-gold-700: #8a660d;
+  --color-brand-gold-800: #664a0a;
+  --color-brand-gold-900: #443106;
+
+  --color-slate-50:  #f7f8fa;
+  --color-slate-100: #edeff3;
+  --color-slate-200: #dde1e8;
+  --color-slate-300: #c3c9d3;
+  --color-slate-400: #94a0af;
+  --color-slate-500: #6c7788;
+  --color-slate-600: #525c6b;
+  --color-slate-700: #3d4551;
+  --color-slate-800: #2a313a;
+  --color-slate-900: #1a1f26;
+  --color-ink:       #131820;
+
+  /* Roles — cambian con el tema porque apuntan a las variables de tokens.css */
+  --color-bg:        var(--taz-bg);
+  --color-surface:   var(--taz-surface);
+  --color-border-ui: var(--taz-border);
+  --color-body:      var(--taz-text);
+  --color-muted:     var(--taz-text-muted);
+  --color-primary:   var(--taz-primary);
+  --color-accent:    var(--taz-accent);
+
+  --color-success: #2e9e6b;
+  --color-warning: #d9622b;
+  --color-danger:  #c93a38;
+  --color-info:    #2c8ba8;
+
+  --radius-taz:    4px;
+  --radius-taz-lg: 8px;
+}

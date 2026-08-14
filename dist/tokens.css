@@ -1,0 +1,184 @@
+/* ==========================================================================
+   TAZ — Tokens de color
+   Derivados del logotipo oficial (TAZ_LOGO.png):
+     azul   #4477B7  (14,4% de los píxeles del logo)
+     dorado #E8BB2F  ( 8,5%)
+     gris   #959595  (75,3% — wordmark)
+
+   Uso: importar antes que cualquier otro CSS del proyecto.
+   Todos los pares texto/fondo marcados AA cumplen >= 4,5:1.
+   ========================================================================== */
+
+:root {
+  /* --- Escala azul (matiz 213) ------------------------------------------ */
+  --taz-blue-50:  #f1f5fb;
+  --taz-blue-100: #dee9f5;
+  --taz-blue-200: #bfd2ea;
+  --taz-blue-300: #97b4da;
+  --taz-blue-400: #6c94c8;
+  --taz-blue-500: #4477b7; /* ← color del logo */
+  --taz-blue-600: #35619b; /* texto/enlaces sobre blanco — 6,3:1 */
+  --taz-blue-700: #2a4d7c;
+  --taz-blue-800: #21395b;
+  --taz-blue-900: #17273d;
+
+  /* --- Escala dorada (matiz 45) ----------------------------------------- */
+  --taz-gold-50:  #fdf8e9;
+  --taz-gold-100: #faefc7;
+  --taz-gold-200: #f5df8e;
+  --taz-gold-300: #efcd57;
+  --taz-gold-400: #e8bb2f; /* ← color del logo. Solo relleno, NUNCA texto sobre blanco */
+  --taz-gold-500: #d3a61c;
+  --taz-gold-600: #b08615;
+  --taz-gold-700: #8a660d; /* texto dorado sobre blanco — 5,3:1 */
+  --taz-gold-800: #664a0a;
+  --taz-gold-900: #443106;
+
+  /* --- Neutros fríos (matiz 215, saturación baja) ------------------------ */
+  --taz-slate-50:  #f7f8fa;
+  --taz-slate-100: #edeff3;
+  --taz-slate-200: #dde1e8;
+  --taz-slate-300: #c3c9d3;
+  --taz-slate-400: #94a0af;
+  --taz-slate-500: #6c7788;
+  --taz-slate-600: #525c6b;
+  --taz-slate-700: #3d4551;
+  --taz-slate-800: #2a313a;
+  --taz-slate-900: #1a1f26;
+  --taz-ink:       #131820;
+
+  /* Gris puro del logotipo. Reservado al wordmark y a assets de marca;
+     no usarlo como neutro de interfaz (choca con la escala fría). */
+  --taz-gray-logo: #959595;
+
+  /* --- Semánticos -------------------------------------------------------- */
+  --taz-success:      #2e9e6b;
+  --taz-success-text: #1f7d52;
+  --taz-success-bg:   #e8f6ef;
+  --taz-warning:      #d9622b;
+  --taz-warning-text: #a8471a;
+  --taz-warning-bg:   #fdeee5;
+  --taz-danger:       #c93a38;
+  --taz-danger-text:  #a82f2d;
+  --taz-danger-bg:    #fbebeb;
+  --taz-info:         #2c8ba8;
+  --taz-info-text:    #1f6b83;
+  --taz-info-bg:      #e7f3f7;
+
+  /* --- Roles de aplicación (tema claro) ---------------------------------- */
+  --taz-bg:            #ffffff;
+  --taz-bg-subtle:     var(--taz-slate-50);
+  --taz-surface:       #ffffff;
+  --taz-surface-sunk:  var(--taz-slate-100);
+  --taz-border:        var(--taz-slate-200);
+  --taz-border-strong: var(--taz-slate-300);
+
+  --taz-text:          var(--taz-slate-800);
+  --taz-text-muted:    var(--taz-slate-500);
+  --taz-text-inverse:  #ffffff;
+
+  --taz-primary:        var(--taz-blue-500);
+  --taz-primary-hover:  var(--taz-blue-600);
+  --taz-primary-active: var(--taz-blue-700);
+  --taz-primary-text:   var(--taz-blue-600);
+  --taz-primary-soft:   var(--taz-blue-50);
+  --taz-on-primary:     #ffffff;
+
+  --taz-accent:       var(--taz-gold-400);
+  --taz-accent-hover: var(--taz-gold-500);
+  --taz-accent-text:  var(--taz-gold-700);
+  --taz-accent-soft:  var(--taz-gold-50);
+  --taz-on-accent:    var(--taz-slate-900); /* el dorado SIEMPRE lleva texto oscuro */
+
+  --taz-focus-ring: 0 0 0 3px rgb(68 119 183 / 0.40);
+  --taz-radius:     4px;
+  --taz-radius-lg:  8px;
+
+  /* --- Tipografía ---------------------------------------------------------
+     Pilas del sistema: cargan al instante y no dependen de un CDN. Si un
+     proyecto incorpora una fuente propia, redefine estas tres variables y
+     todo el sistema la adopta.                                             */
+  --taz-font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --taz-font-body:    "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --taz-font-mono:    ui-monospace, "Cascadia Code", "Cascadia Mono", Consolas, "SF Mono", monospace;
+}
+
+/* --- Tema oscuro ---------------------------------------------------------
+   Solo se redefinen roles; las escalas quedan intactas.
+   Se aplica cuando el SO está en oscuro y el usuario no forzó claro...       */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --taz-bg:            var(--taz-ink);
+    --taz-bg-subtle:     var(--taz-slate-900);
+    --taz-surface:       var(--taz-slate-900);
+    --taz-surface-sunk:  #10151c;
+    --taz-border:        #2b323d;
+    --taz-border-strong: #3d4551;
+
+    --taz-text:          #e6eaf0;
+    --taz-text-muted:    var(--taz-slate-400);
+    --taz-text-inverse:  var(--taz-slate-900);
+
+    --taz-primary:        var(--taz-blue-500);
+    --taz-primary-hover:  var(--taz-blue-400);
+    --taz-primary-active: var(--taz-blue-300);
+    --taz-primary-text:   var(--taz-blue-300); /* 5,2:1 sobre el fondo oscuro */
+    --taz-primary-soft:   #1b2b40;
+    --taz-on-primary:     #ffffff;
+
+    --taz-accent:       var(--taz-gold-400);
+    --taz-accent-hover: var(--taz-gold-300);
+    --taz-accent-text:  var(--taz-gold-300);
+    --taz-accent-soft:  #33280a;
+    --taz-on-accent:    var(--taz-slate-900);
+
+    --taz-success-text: #56c493;
+    --taz-success-bg:   #123024;
+    --taz-warning-text: #f0894d;
+    --taz-warning-bg:   #3a1e0f;
+    --taz-danger-text:  #ea6f6d;
+    --taz-danger-bg:    #3a1717;
+    --taz-info-text:    #5cb5cf;
+    --taz-info-bg:      #102c36;
+
+    --taz-focus-ring: 0 0 0 3px rgb(151 180 218 / 0.45);
+  }
+}
+
+/* ...y también cuando el usuario fuerza oscuro explícitamente. */
+:root[data-theme="dark"] {
+  --taz-bg:            var(--taz-ink);
+  --taz-bg-subtle:     var(--taz-slate-900);
+  --taz-surface:       var(--taz-slate-900);
+  --taz-surface-sunk:  #10151c;
+  --taz-border:        #2b323d;
+  --taz-border-strong: #3d4551;
+
+  --taz-text:          #e6eaf0;
+  --taz-text-muted:    var(--taz-slate-400);
+  --taz-text-inverse:  var(--taz-slate-900);
+
+  --taz-primary:        var(--taz-blue-500);
+  --taz-primary-hover:  var(--taz-blue-400);
+  --taz-primary-active: var(--taz-blue-300);
+  --taz-primary-text:   var(--taz-blue-300);
+  --taz-primary-soft:   #1b2b40;
+  --taz-on-primary:     #ffffff;
+
+  --taz-accent:       var(--taz-gold-400);
+  --taz-accent-hover: var(--taz-gold-300);
+  --taz-accent-text:  var(--taz-gold-300);
+  --taz-accent-soft:  #33280a;
+  --taz-on-accent:    var(--taz-slate-900);
+
+  --taz-success-text: #56c493;
+  --taz-success-bg:   #123024;
+  --taz-warning-text: #f0894d;
+  --taz-warning-bg:   #3a1e0f;
+  --taz-danger-text:  #ea6f6d;
+  --taz-danger-bg:    #3a1717;
+  --taz-info-text:    #5cb5cf;
+  --taz-info-bg:      #102c36;
+
+  --taz-focus-ring: 0 0 0 3px rgb(151 180 218 / 0.45);
+}

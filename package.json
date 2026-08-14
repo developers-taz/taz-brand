@@ -1,0 +1,45 @@
+{
+  "name": "@tazcorp/brand",
+  "version": "1.0.0",
+  "description": "Sistema de diseño de TazCorp: tokens de color derivados del logotipo y capa de componentes CSS para Angular, React y plantillas del servidor.",
+  "type": "module",
+  "private": true,
+  "sideEffects": [
+    "*.css"
+  ],
+  "style": "dist/taz.css",
+  "main": "dist/taz.css",
+  "exports": {
+    ".": "./dist/taz.css",
+    "./taz.css": "./dist/taz.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./ui.css": "./dist/taz-ui.css",
+    "./theme.css": "./dist/taz.theme.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build": "storybook build",
+    "build-storybook": "storybook build"
+  },
+  "keywords": [
+    "tazcorp",
+    "design-system",
+    "design-tokens",
+    "css"
+  ],
+  "author": "TazCorp <developers@tazcorp.cl>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/developers-taz/taz-brand.git"
+  },
+  "homepage": "https://developers-taz.github.io/taz-brand/",
+  "devDependencies": {
+    "@storybook/addon-docs": "^10.5.8",
+    "@storybook/html-vite": "^10.5.8",
+    "storybook": "^10.5.8",
+    "vite": "^8.2.1"
+  }
+}

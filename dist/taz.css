@@ -1,0 +1,12 @@
+/* ==========================================================================
+   TAZ — Punto de entrada único.
+   Trae los tokens de color y la capa de componentes en un solo archivo.
+
+     <link rel="stylesheet" href=".../dist/taz.css">
+     @import "@tazcorp/brand";
+
+   Si el proyecto usa Tailwind 4, importa además dist/taz.theme.css.
+   ========================================================================== */
+
+@import "./tokens.css";
+@import "./taz-ui.css";
