@@ -541,3 +541,71 @@
 .taz-grid    { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 .taz-divider { border: 0; border-top: 1px solid var(--taz-border); margin: 0; }
 .taz-spacer  { flex: 1 1 auto; }
+
+/* --- 12. Adaptación a pantalla pequeña ------------------------------------ */
+
+/* Safari en iOS hace zoom sobre cualquier campo con texto menor a 16px y
+   después no vuelve. Subir el tamaño es la única forma de evitarlo. */
+@media (max-width: 640px) {
+  .taz-input,
+  .taz-textarea,
+  .taz-select,
+  .taz-input--sm,
+  .taz-select--sm { font-size: 16px; }
+}
+
+/* Con el dedo, el objetivo mínimo cómodo es 44px. Aplica solo a punteros
+   gruesos para no engordar la interfaz de escritorio. */
+@media (pointer: coarse) {
+  .taz-btn { min-height: 44px; }
+  .taz-btn--sm { min-height: 38px; }
+  .taz-page { min-width: 40px; height: 40px; }
+  .taz-tab { padding: 13px 16px; }
+  .taz-check input[type="checkbox"],
+  .taz-check input[type="radio"] { width: 20px; height: 20px; }
+  .taz-check, .taz-switch { padding: 4px 0; }
+}
+
+/* Tabla apilada: cada fila pasa a ser una ficha y el encabezado se traslada
+   a cada celda vía data-label. Requiere marcar las celdas:
+     <td data-label="Pasivo" class="taz-num">$ 184.320.500</td>          */
+@media (max-width: 640px) {
+  .taz-table--stack thead { display: none; }
+  .taz-table--stack tbody tr {
+    display: block;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--taz-border);
+  }
+  .taz-table--stack tbody tr:last-child { border-bottom: 0; }
+  .taz-table--stack tbody td {
+    display: grid;
+    grid-template-columns: minmax(96px, 38%) minmax(0, 1fr);
+    gap: 12px;
+    align-items: baseline;
+    border: 0;
+    padding: 5px 16px;
+    text-align: left;
+  }
+  .taz-table--stack tbody td::before {
+    content: attr(data-label);
+    font-family: var(--taz-font-mono);
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--taz-text-muted);
+  }
+  /* Los montos vuelven a la izquierda: alineados a la derecha en una ficha
+     de una sola columna quedarían flotando lejos de su etiqueta. */
+  .taz-table--stack tbody td.taz-num { text-align: left; }
+  .taz-table--stack tbody tr.is-selected td:first-child { box-shadow: none; }
+  .taz-table--stack tbody tr.is-selected { box-shadow: inset 3px 0 0 var(--taz-primary); }
+  .taz-table--stack tfoot td { display: flex; justify-content: space-between; gap: 12px; }
+}
+
+/* Fila de acciones que se apila y ocupa el ancho en móvil. */
+@media (max-width: 640px) {
+  .taz-row--stack-sm { flex-direction: column; align-items: stretch; }
+  .taz-row--stack-sm > .taz-btn { width: 100%; }
+  .taz-card__foot { flex-wrap: wrap; }
+  .taz-card__body, .taz-card__head, .taz-card__foot { padding-left: 16px; padding-right: 16px; }
+}

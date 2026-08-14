@@ -1,6 +1,6 @@
 {
   "name": "@tazcorp/brand",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Sistema de diseño de TazCorp: tokens de color derivados del logotipo y capa de componentes CSS para Angular, React y plantillas del servidor.",
   "type": "module",
   "private": true,
@@ -14,7 +14,9 @@
     "./taz.css": "./dist/taz.css",
     "./tokens.css": "./dist/tokens.css",
     "./ui.css": "./dist/taz-ui.css",
-    "./theme.css": "./dist/taz.theme.css"
+    "./shell.css": "./dist/taz-shell.css",
+    "./theme.css": "./dist/taz.theme.css",
+    "./tailwind3": "./dist/tailwind3.cjs"
   },
   "files": [
     "dist"

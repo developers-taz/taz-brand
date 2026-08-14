@@ -1,0 +1,406 @@
+/* ==========================================================================
+   TAZ SHELL — Estructura de aplicación y superposiciones
+   Menú lateral, barra superior, barra inferior, mensajes emergentes y diálogos.
+
+   Requiere tokens.css. Se carga junto a taz-ui.css (ambos vienen en taz.css).
+
+   Estrategia responsive, un solo quiebre real en 900px:
+     ≥ 900px   menú lateral fijo a la izquierda, sin barra inferior
+     < 900px   menú lateral como cajón sobre el contenido, barra inferior visible
+
+   Índice
+     1. Estructura
+     2. Menú lateral
+     3. Barra superior
+     4. Barra inferior
+     5. Velo
+     6. Mensajes emergentes
+     7. Diálogos
+   ========================================================================== */
+
+:root {
+  --taz-shell-sidebar: 256px;
+  --taz-shell-sidebar-collapsed: 72px;
+  --taz-shell-topbar: 56px;
+  --taz-shell-bottomnav: 58px;
+  --taz-z-sidebar: 40;
+  --taz-z-overlay: 35;
+  --taz-z-topbar: 30;
+  --taz-z-bottomnav: 30;
+  --taz-z-toast: 60;
+}
+
+/* --- 1. Estructura ------------------------------------------------------- */
+
+.taz-shell {
+  display: grid;
+  grid-template-columns: var(--taz-shell-sidebar) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas:
+    "sidebar topbar"
+    "sidebar main";
+  /* dvh y no vh: en móvil la barra de direcciones del navegador cambia de
+     alto al hacer scroll y vh deja un salto de varios píxeles. */
+  min-height: 100dvh;
+  background: var(--taz-bg-subtle);
+}
+
+/* Menú lateral reducido a iconos. Alterna la clase en el contenedor. */
+.taz-shell--collapsed { grid-template-columns: var(--taz-shell-sidebar-collapsed) minmax(0, 1fr); }
+
+.taz-main {
+  grid-area: main;
+  min-width: 0;
+  padding: 24px;
+}
+
+/* Ancho de lectura cómodo dentro del contenido. */
+.taz-main__inner { max-width: 1180px; margin: 0 auto; }
+
+@media (max-width: 900px) {
+  .taz-shell,
+  .taz-shell--collapsed {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "topbar" "main";
+  }
+  .taz-main {
+    padding: 16px;
+    /* Espacio para que la barra inferior no tape el final del contenido. */
+    padding-bottom: calc(var(--taz-shell-bottomnav) + env(safe-area-inset-bottom, 0px) + 16px);
+  }
+}
+
+/* --- 2. Menú lateral ----------------------------------------------------- */
+
+.taz-sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--taz-surface);
+  border-right: 1px solid var(--taz-border);
+  padding: 12px;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  max-height: 100dvh;
+  z-index: var(--taz-z-sidebar);
+}
+
+.taz-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px 14px;
+  font-family: var(--taz-font-display);
+  font-weight: 700;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+
+.taz-sidebar__group {
+  font-family: var(--taz-font-mono);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--taz-text-muted);
+  padding: 16px 10px 6px;
+  white-space: nowrap;
+}
+
+.taz-navitem {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 11px;
+  border-radius: var(--taz-radius);
+  color: var(--taz-text);
+  font-size: 14.5px;
+  text-decoration: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: var(--taz-font-body);
+  white-space: nowrap;
+}
+.taz-navitem:hover { background: var(--taz-surface-sunk); }
+.taz-navitem:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+
+/* El activo lleva la barra dorada, igual que la pestaña activa: es la misma
+   señal de marca en los dos ejes de navegación. */
+.taz-navitem.is-active {
+  background: var(--taz-primary-soft);
+  color: var(--taz-primary-text);
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--taz-accent);
+}
+
+.taz-navitem__icon { flex: none; width: 20px; height: 20px; display: grid; place-items: center; }
+.taz-navitem__label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.taz-navitem__badge {
+  flex: none;
+  font-family: var(--taz-font-mono);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 99px;
+  background: var(--taz-surface-sunk);
+  color: var(--taz-text-muted);
+}
+.taz-navitem.is-active .taz-navitem__badge { background: var(--taz-accent); color: var(--taz-on-accent); }
+
+.taz-sidebar__foot { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--taz-border); }
+
+/* Reducido: sobreviven los iconos, se van las etiquetas. */
+.taz-shell--collapsed .taz-navitem { justify-content: center; padding: 10px; }
+.taz-shell--collapsed .taz-navitem__label,
+.taz-shell--collapsed .taz-navitem__badge,
+.taz-shell--collapsed .taz-sidebar__group,
+.taz-shell--collapsed .taz-sidebar__brand span { display: none; }
+.taz-shell--collapsed .taz-sidebar__brand { justify-content: center; padding: 6px 0 14px; }
+
+/* Bajo 900px el lateral pasa a ser un cajón sobre el contenido. */
+@media (max-width: 900px) {
+  .taz-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(84vw, var(--taz-shell-sidebar));
+    max-height: none;
+    transform: translateX(-100%);
+    transition: transform .22s ease;
+    box-shadow: 0 0 40px rgb(19 24 32 / .28);
+  }
+  .taz-sidebar.is-open { transform: translateX(0); }
+  /* Reducido no aplica en móvil: el cajón siempre va completo. */
+  .taz-shell--collapsed .taz-navitem { justify-content: flex-start; padding: 9px 11px; }
+  .taz-shell--collapsed .taz-navitem__label,
+  .taz-shell--collapsed .taz-navitem__badge,
+  .taz-shell--collapsed .taz-sidebar__group,
+  .taz-shell--collapsed .taz-sidebar__brand span { display: revert; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .taz-sidebar { transition: none; }
+}
+
+/* --- 3. Barra superior --------------------------------------------------- */
+
+.taz-topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--taz-shell-topbar);
+  padding: 0 16px;
+  background: var(--taz-surface);
+  border-bottom: 1px solid var(--taz-border);
+  position: sticky;
+  top: 0;
+  z-index: var(--taz-z-topbar);
+}
+.taz-topbar__title {
+  font-family: var(--taz-font-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.taz-topbar__actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+/* Buscador de la barra: se esconde en móvil, donde el espacio es del título. */
+.taz-topbar__search { flex: 1; max-width: 360px; }
+@media (max-width: 900px) { .taz-topbar__search { display: none; } }
+
+/* Botón de menú: solo existe cuando el lateral es cajón. */
+.taz-burger { display: none; }
+@media (max-width: 900px) { .taz-burger { display: inline-flex; } }
+
+/* --- 4. Barra inferior --------------------------------------------------- */
+
+.taz-bottomnav {
+  display: none;
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: var(--taz-z-bottomnav);
+  background: var(--taz-surface);
+  border-top: 1px solid var(--taz-border);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (max-width: 900px) { .taz-bottomnav { display: flex; } }
+
+.taz-bottomnav__item {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--taz-shell-bottomnav);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 4px;
+  border: 0;
+  border-top: 2px solid transparent;
+  background: transparent;
+  color: var(--taz-text-muted);
+  font-family: var(--taz-font-body);
+  font-size: 11px;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+}
+.taz-bottomnav__item:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+.taz-bottomnav__item.is-active { color: var(--taz-primary-text); border-top-color: var(--taz-accent); font-weight: 600; }
+.taz-bottomnav__label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Punto de aviso sobre el icono. */
+.taz-bottomnav__dot {
+  position: absolute;
+  top: 8px;
+  left: calc(50% + 6px);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--taz-danger);
+  border: 1.5px solid var(--taz-surface);
+}
+
+/* --- 5. Velo ------------------------------------------------------------- */
+
+.taz-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--taz-z-overlay);
+  background: rgb(19 24 32 / .48);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, visibility .2s;
+}
+.taz-overlay.is-open { opacity: 1; visibility: visible; }
+@media (min-width: 901px) { .taz-overlay { display: none; } }
+@media (prefers-reduced-motion: reduce) { .taz-overlay { transition: none; } }
+
+/* --- 6. Mensajes emergentes ---------------------------------------------- */
+
+/* Contenedor único por aplicación. En escritorio abajo a la derecha; en móvil
+   arriba y a lo ancho, lejos del pulgar y de la barra inferior. */
+.taz-toaster {
+  position: fixed;
+  z-index: var(--taz-z-toast);
+  inset: auto 16px 16px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(380px, calc(100vw - 32px));
+  pointer-events: none;
+}
+.taz-toaster > * { pointer-events: auto; }
+
+@media (max-width: 900px) {
+  .taz-toaster {
+    inset: calc(env(safe-area-inset-top, 0px) + 12px) 12px auto 12px;
+    width: auto;
+  }
+}
+
+.taz-toast {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 13px 14px;
+  background: var(--taz-surface);
+  border: 1px solid var(--taz-border);
+  border-left: 3px solid var(--taz-text-muted);
+  border-radius: var(--taz-radius-lg);
+  box-shadow: 0 6px 24px -8px rgb(19 24 32 / .35);
+  font-size: 14px;
+  animation: taz-toast-in .24s cubic-bezier(.2, .8, .3, 1);
+}
+.taz-toast__icon { font-family: var(--taz-font-mono); font-weight: 700; line-height: 1.4; }
+.taz-toast__title { font-family: var(--taz-font-display); font-weight: 600; font-size: 14.5px; margin: 0 0 2px; }
+.taz-toast__body { color: var(--taz-text-muted); font-size: 13.5px; }
+.taz-toast__close {
+  border: 0;
+  background: transparent;
+  color: var(--taz-text-muted);
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: var(--taz-radius);
+}
+.taz-toast__close:hover { background: var(--taz-surface-sunk); color: var(--taz-text); }
+.taz-toast__close:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+
+.taz-toast--success { border-left-color: var(--taz-success); }
+.taz-toast--success .taz-toast__icon { color: var(--taz-success-text); }
+.taz-toast--warning { border-left-color: var(--taz-warning); }
+.taz-toast--warning .taz-toast__icon { color: var(--taz-warning-text); }
+.taz-toast--danger  { border-left-color: var(--taz-danger); }
+.taz-toast--danger .taz-toast__icon  { color: var(--taz-danger-text); }
+.taz-toast--info    { border-left-color: var(--taz-info); }
+.taz-toast--info .taz-toast__icon    { color: var(--taz-info-text); }
+
+.taz-toast.is-leaving { animation: taz-toast-out .18s ease forwards; }
+
+@keyframes taz-toast-in  { from { opacity: 0; transform: translateY(10px) scale(.98); } }
+@keyframes taz-toast-out { to   { opacity: 0; transform: translateY(-6px); } }
+@media (max-width: 900px) {
+  @keyframes taz-toast-in { from { opacity: 0; transform: translateY(-12px); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .taz-toast, .taz-toast.is-leaving { animation: none; }
+}
+
+/* --- 7. Diálogos --------------------------------------------------------- */
+
+/* Sobre <dialog> nativo: el foco atrapado, el cierre con Escape y el fondo
+   inerte los da el navegador. Abrir con .showModal(). */
+.taz-modal {
+  border: 0;
+  padding: 0;
+  background: var(--taz-surface);
+  color: var(--taz-text);
+  border-radius: var(--taz-radius-lg);
+  box-shadow: 0 24px 60px -20px rgb(19 24 32 / .55);
+  width: min(520px, calc(100vw - 32px));
+  max-height: min(85dvh, 720px);
+  overflow: hidden;
+  /* display:flex solo cuando está abierto: si no, <dialog> cerrado se vería. */
+}
+.taz-modal[open] { display: flex; flex-direction: column; }
+.taz-modal::backdrop { background: rgb(19 24 32 / .55); }
+
+.taz-modal__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--taz-border);
+}
+.taz-modal__head > :last-child:not(:only-child) { margin-left: auto; }
+.taz-modal__body { padding: 20px; overflow-y: auto; font-size: 14.5px; }
+.taz-modal__foot {
+  padding: 14px 20px;
+  border-top: 1px solid var(--taz-border);
+  background: var(--taz-bg-subtle);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* En móvil el diálogo baja al borde inferior y se vuelve hoja: queda al
+   alcance del pulgar en vez de flotar al centro de la pantalla. */
+@media (max-width: 640px) {
+  .taz-modal {
+    width: 100vw;
+    max-width: 100vw;
+    margin: auto auto 0;
+    border-radius: var(--taz-radius-lg) var(--taz-radius-lg) 0 0;
+    max-height: 88dvh;
+  }
+  .taz-modal__foot { padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
+  .taz-modal__foot .taz-btn { flex: 1; }
+}

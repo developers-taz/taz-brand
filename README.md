@@ -38,21 +38,73 @@ Sin instalar nada: jsDelivr sirve el archivo directo desde el tag de GitHub.
 @import "@tazcorp/brand/theme.css";  /* habilita bg-primary, text-brand-gold-700… */
 ```
 
+### Proyecto con Tailwind 3
+
+Tailwind 3 no entiende el bloque `@theme`. La paleta entra como preset:
+
+```js
+// tailwind.config.js
+module.exports = {
+  presets: [require('@tazcorp/brand/tailwind3')],
+  content: ['./src/**/*.{html,ts,tsx,js,jsx}'],
+};
+```
+
+```css
+/* y el CSS igual que siempre */
+@import "@tazcorp/brand";
+```
+
 ---
 
 ## Qué trae
 
 | Archivo | Contenido |
 |---|---|
-| `dist/taz.css` | Punto de entrada: tokens + componentes |
+| `dist/taz.css` | Punto de entrada: tokens + componentes + estructura |
 | `dist/tokens.css` | Variables de color y tipografía, con tema oscuro |
-| `dist/taz-ui.css` | Componentes: botones, formularios, tablas, insignias, alertas, tarjetas, pestañas |
+| `dist/taz-ui.css` | Botones, formularios, tablas, insignias, alertas, tarjetas, pestañas |
+| `dist/taz-shell.css` | Menú lateral, barras superior e inferior, avisos y diálogos |
 | `dist/taz.theme.css` | Bloque `@theme` para Tailwind 4 |
+| `dist/tailwind3.cjs` | Preset para Tailwind 3 |
 
 Componentes disponibles: botones (6 variantes, 3 tamaños, grupos), campos de texto,
 `textarea`, combobox, casillas, radios, interruptor, grupos con prefijo y sufijo, tablas
-(alternas, compactas, encabezado fijo, selección, totales, estado vacío), paginación,
-insignias, alertas, tarjetas, métricas, pestañas y el spinner de la espiral.
+(alternas, compactas, encabezado fijo, selección, totales, estado vacío, apiladas en
+móvil), paginación, insignias, alertas, tarjetas, métricas, pestañas, menú lateral, barra
+superior, barra inferior, mensajes emergentes, diálogos y el spinner de la espiral.
+
+---
+
+## Adaptación a pantalla
+
+Un solo quiebre real, en **900 px**. Un único punto de corte se sostiene en el tiempo; tres
+o cuatro terminan contradiciéndose entre sí.
+
+| Ancho | Menú lateral | Barra inferior | Tablas | Diálogo |
+|---|---|---|---|---|
+| ≥ 900 | Anclado, reducible a iconos | no aparece | Columnas | Centrado |
+| 640–899 | Cajón con velo | Fija abajo | Columnas con desborde | Centrado |
+| < 640 | Cajón con velo | Fija abajo | Fichas apiladas | Hoja inferior |
+
+Cuatro detalles que no son cosméticos:
+
+- **Los campos suben a 16 px bajo 640 px.** Safari en iOS hace zoom sobre cualquier campo
+  con texto menor a 16 px y después no vuelve al tamaño original.
+- **`100dvh` y no `100vh`.** En móvil la barra de direcciones cambia de alto al hacer
+  scroll y `vh` provoca un salto en cada gesto.
+- **Objetivos de 44 px solo al tacto**, bajo `@media (pointer: coarse)`. La interfaz de
+  escritorio no engorda por culpa del celular.
+- **Zonas seguras.** La barra inferior y el pie del diálogo suman
+  `env(safe-area-inset-bottom)` para no quedar bajo la barra gestual del iPhone.
+
+Para que una tabla se apile hay que marcar las celdas:
+
+```html
+<table class="taz-table taz-table--stack">
+  ...
+  <td data-label="Pasivo" class="taz-num">$ 184.320.500</td>
+```
 
 ---
 
