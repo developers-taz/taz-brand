@@ -13,7 +13,7 @@ React y las plantillas Jinja consumen exactamente el mismo archivo.
 ### Angular, React o cualquier proyecto con npm
 
 ```bash
-npm i github:developers-taz/taz-brand#v1.0.0
+npm i github:developers-taz/taz-brand#v1.2.0
 ```
 
 ```css
@@ -27,7 +27,7 @@ Sin instalar nada: jsDelivr sirve el archivo directo desde el tag de GitHub.
 
 ```html
 <link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/developers-taz/taz-brand@v1.0.0/dist/taz.css">
+      href="https://cdn.jsdelivr.net/gh/developers-taz/taz-brand@v1.2.0/dist/taz.css">
 ```
 
 ### Proyecto con Tailwind 4
@@ -69,10 +69,49 @@ module.exports = {
 | `dist/tailwind3.cjs` | Preset para Tailwind 3 |
 
 Componentes disponibles: botones (6 variantes, 3 tamaños, grupos), campos de texto,
-`textarea`, combobox, casillas, radios, interruptor, grupos con prefijo y sufijo, tablas
-(alternas, compactas, encabezado fijo, selección, totales, estado vacío, apiladas en
-móvil), paginación, insignias, alertas, tarjetas, métricas, pestañas, menú lateral, barra
-superior, barra inferior, mensajes emergentes, diálogos y el spinner de la espiral.
+`textarea`, combobox, casillas, radios, interruptor, grupos con prefijo y sufijo, campos
+de fecha y hora, calendario propio, rejilla de horarios, subida de archivos con zona de
+arrastre, tablas (alternas, compactas, encabezado fijo, selección, totales, estado vacío,
+apiladas en móvil), paginación, insignias, alertas, tarjetas, paneles, pozos, métricas,
+pestañas, migas de pan, menú lateral, barras superior e inferior, menú desplegable,
+tooltips, mensajes emergentes, diálogos y el spinner de la espiral.
+
+---
+
+## Las reglas del sistema
+
+Además de las tres de color, hay dos reglas técnicas que el CSS ya aplica y que conviene
+respetar al escribir componentes nuevos:
+
+**Ningún componente hereda el color del texto.** Todo lo que muestre texto declara
+`color: var(--taz-text)`. La propiedad `color` se resuelve una sola vez donde se escribe y
+desciende como valor concreto: si más abajo un contenedor redefine el token —una sección
+con tema propio, una barra oscura sobre contenido claro— el texto heredado conserva el
+color del ancestro y termina en claro sobre claro.
+
+**El modelo de caja es `border-box`, y se declara.** Se aplica a `[class*="taz-"]`, no con
+un `*` global, para no alterar la maquetación del proyecto anfitrión. Sin esto un campo con
+`width: 100%` más relleno y borde se sale de su contenedor.
+
+---
+
+## Profundidad: la escalera de superficies
+
+El tema claro tiene cuatro planos, con saltos parejos de luminancia. Sin dos planos
+distintos nada se levanta y la interfaz se ve plana.
+
+| Plano | Token | Claro | Oscuro | Para |
+|---|---|---|---|---|
+| Pozo | `--taz-surface-sunk` | `#D8E0EC` | `#262F3B` | encabezados de tabla, afijos, hover |
+| Lienzo | `--taz-bg` | `#EAEEF5` | `#0F1319` | el fondo de la página |
+| Superficie | `--taz-surface` | `#FFFFFF` | `#1A212B` | tarjetas, barras, paneles |
+| Elevada | `--taz-surface-raised` | `#FFFFFF` + sombra | `#2F3945` | diálogos, menús, avisos |
+
+En oscuro el peldaño hundido **sube** en vez de bajar: bajo el lienzo ya no queda recorrido
+antes del negro, y un encabezado más oscuro que la página se confunde con ella.
+
+Cuatro niveles de elevación en `--taz-elev-1…4`, teñidos con el azul pizarra de la marca:
+una sombra de negro puro sobre un lienzo frío se ve sucia.
 
 ---
 
@@ -195,7 +234,7 @@ Cada push a `main` reconstruye y publica la documentación en GitHub Pages.
 ### Publicar una versión
 
 ```bash
-git tag v1.1.0 && git push origin v1.1.0
+git tag v1.3.0 && git push origin v1.3.0
 ```
 
 Los proyectos apuntan a un tag, no a `main`, para que un cambio en el sistema no altere

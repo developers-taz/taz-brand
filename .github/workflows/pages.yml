@@ -31,7 +31,7 @@ jobs:
 
       # Las dos páginas estáticas viajan junto al Storybook compilado.
       - name: Adjuntar páginas estáticas
-        run: cp identidad-taz.html preview-componentes.html preview-shell.html storybook-static/
+        run: cp identidad-taz.html preview-*.html storybook-static/
 
       - uses: actions/upload-pages-artifact@v3
         with:

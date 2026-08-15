@@ -76,7 +76,7 @@ export const Tamanos = {
         <svg class="taz-spinner" width="15" height="15" viewBox="0 0 100 100" aria-hidden="true">
           <circle class="taz-spinner__outer" cx="50" cy="50" r="42" fill="none" stroke="currentColor"
                   stroke-width="12" stroke-linecap="round" pathLength="100"
-                  stroke-dasharray="55 45" transform="rotate(-95 50 50)"/>
+                  stroke-dasharray="55 45" stroke-dashoffset="26"/>
         </svg>
         Procesando
       </button>

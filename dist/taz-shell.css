@@ -42,7 +42,9 @@
   /* dvh y no vh: en móvil la barra de direcciones del navegador cambia de
      alto al hacer scroll y vh deja un salto de varios píxeles. */
   min-height: 100dvh;
-  background: var(--taz-bg-subtle);
+  /* Lienzo teñido: las tarjetas y tablas se levantan sobre él. Si esto fuera
+     blanco, todo lo que va encima desaparecería. */
+  background: var(--taz-bg);
 }
 
 /* Menú lateral reducido a iconos. Alterna la clase en el contenedor. */
@@ -169,7 +171,7 @@
     max-height: none;
     transform: translateX(-100%);
     transition: transform .22s ease;
-    box-shadow: 0 0 40px rgb(19 24 32 / .28);
+    box-shadow: var(--taz-elev-4);
   }
   .taz-sidebar.is-open { transform: translateX(0); }
   /* Reducido no aplica en móvil: el cajón siempre va completo. */
@@ -194,6 +196,7 @@
   padding: 0 16px;
   background: var(--taz-surface);
   border-bottom: 1px solid var(--taz-border);
+  box-shadow: var(--taz-elev-1);
   position: sticky;
   top: 0;
   z-index: var(--taz-z-topbar);
@@ -310,11 +313,11 @@
   gap: 12px;
   align-items: start;
   padding: 13px 14px;
-  background: var(--taz-surface);
+  background: var(--taz-surface-raised);
   border: 1px solid var(--taz-border);
   border-left: 3px solid var(--taz-text-muted);
   border-radius: var(--taz-radius-lg);
-  box-shadow: 0 6px 24px -8px rgb(19 24 32 / .35);
+  box-shadow: var(--taz-elev-3);
   font-size: 14px;
   animation: taz-toast-in .24s cubic-bezier(.2, .8, .3, 1);
 }
@@ -361,10 +364,10 @@
 .taz-modal {
   border: 0;
   padding: 0;
-  background: var(--taz-surface);
+  background: var(--taz-surface-raised);
   color: var(--taz-text);
   border-radius: var(--taz-radius-lg);
-  box-shadow: 0 24px 60px -20px rgb(19 24 32 / .55);
+  box-shadow: var(--taz-elev-4);
   width: min(520px, calc(100vw - 32px));
   max-height: min(85dvh, 720px);
   overflow: hidden;
@@ -404,3 +407,445 @@
   .taz-modal__foot { padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
   .taz-modal__foot .taz-btn { flex: 1; }
 }
+
+/* --- 8. Migas de pan ----------------------------------------------------- */
+
+/* Marcado: <nav class="taz-breadcrumb" aria-label="Ruta"><ol>…</ol></nav>
+   El último elemento no es enlace y lleva aria-current="page". */
+.taz-breadcrumb__list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13.5px;
+}
+.taz-breadcrumb__list > li { display: flex; align-items: center; min-width: 0; }
+
+/* El separador es decorativo: va en CSS para que ningún lector de pantalla
+   lo lea como si fuera parte del nombre de la página. */
+.taz-breadcrumb__list > li + li::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin: 0 10px;
+  border-right: 1.5px solid var(--taz-border-strong);
+  border-bottom: 1.5px solid var(--taz-border-strong);
+  transform: rotate(-45deg);
+}
+
+.taz-breadcrumb a {
+  color: var(--taz-text-muted);
+  text-decoration: none;
+  border-radius: 3px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.taz-breadcrumb a:hover { color: var(--taz-primary-text); text-decoration: underline; }
+.taz-breadcrumb a:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+.taz-breadcrumb [aria-current="page"] {
+  color: var(--taz-text);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* En teléfono una ruta larga se come la pantalla: quedan el penúltimo y el
+   actual, que es lo único accionable. */
+@media (max-width: 640px) {
+  .taz-breadcrumb--truncate .taz-breadcrumb__list > li:nth-last-child(n+3) { display: none; }
+  .taz-breadcrumb--truncate .taz-breadcrumb__list > li:nth-last-child(2)::before {
+    content: "…";
+    width: auto;
+    height: auto;
+    border: 0;
+    transform: none;
+    margin: 0 8px 0 0;
+    color: var(--taz-text-muted);
+  }
+}
+
+/* --- 9. Menú desplegable ------------------------------------------------- */
+
+/* La aplicación alterna `.is-open` en el menú y `aria-expanded` en el
+   disparador. El paquete solo aporta la apariencia y la posición.
+   Ojo: al ser un hijo posicionado, un ancestro con `overflow: hidden` lo
+   recorta. Dentro de una tabla, usar `.taz-menu--up` en las últimas filas o
+   dar `overflow: visible` al contenedor. */
+.taz-dropdown { position: relative; display: inline-flex; }
+
+.taz-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 45;
+  min-width: 200px;
+  max-width: min(320px, calc(100vw - 24px));
+  padding: 5px;
+  background: var(--taz-surface-raised);
+  color: var(--taz-text);
+  border: 1px solid var(--taz-border);
+  border-radius: var(--taz-radius-lg);
+  box-shadow: var(--taz-elev-3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity .13s ease, transform .13s ease, visibility .13s;
+}
+.taz-menu.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { .taz-menu { transition: none; transform: none; } }
+
+.taz-menu--right { left: auto; right: 0; }
+.taz-menu--up { top: auto; bottom: calc(100% + 6px); transform: translateY(4px); }
+.taz-menu--up.is-open { transform: translateY(0); }
+
+.taz-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--taz-radius);
+  background: transparent;
+  color: var(--taz-text);
+  font-family: var(--taz-font-body);
+  font-size: 14px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.taz-menu__item:hover { background: var(--taz-surface-sunk); }
+.taz-menu__item:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+.taz-menu__item[aria-disabled="true"],
+.taz-menu__item:disabled { opacity: .45; cursor: not-allowed; }
+.taz-menu__item[aria-disabled="true"]:hover,
+.taz-menu__item:disabled:hover { background: transparent; }
+.taz-menu__item--danger { color: var(--taz-danger-text); }
+.taz-menu__item--danger:hover { background: var(--taz-danger-bg); }
+.taz-menu__item.is-active { background: var(--taz-primary-soft); color: var(--taz-primary-text); font-weight: 600; }
+.taz-menu__icon { flex: none; width: 16px; height: 16px; display: grid; place-items: center; }
+/* Atajo de teclado alineado a la derecha. */
+.taz-menu__hint { margin-left: auto; font-family: var(--taz-font-mono); font-size: 11px; color: var(--taz-text-muted); }
+
+.taz-menu__label {
+  padding: 8px 10px 4px;
+  font-family: var(--taz-font-mono);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--taz-text-muted);
+}
+.taz-menu__sep { border: 0; border-top: 1px solid var(--taz-border); margin: 5px -5px; }
+
+/* --- 10. Tooltip --------------------------------------------------------- */
+
+/* Marcado:
+     <button class="taz-tip" data-tip="Descargar informe" aria-label="Descargar informe">
+
+   El texto de `data-tip` es contenido generado por CSS y NINGÚN lector de
+   pantalla lo anuncia. La descripción accesible tiene que ir aparte, en
+   `aria-label` cuando el control no tiene texto visible, o en
+   `aria-describedby` apuntando a un `.taz-sr-only` cuando sí lo tiene.
+
+   Al ser un pseudo-elemento posicionado, un ancestro con `overflow: hidden`
+   lo recorta. Para casos así conviene un tooltip con JS y capa superior. */
+.taz-tip { position: relative; }
+
+.taz-tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  z-index: 55;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 240px;
+  padding: 6px 10px;
+  background: var(--taz-slate-800);
+  color: #fff;
+  font-family: var(--taz-font-body);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: normal;
+  text-align: center;
+  border-radius: var(--taz-radius);
+  box-shadow: var(--taz-elev-2);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .14s ease .25s, visibility .14s .25s;
+  pointer-events: none;
+}
+.taz-tip::before {
+  content: "";
+  position: absolute;
+  z-index: 56;
+  bottom: calc(100% + 3px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--taz-slate-800);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .14s ease .25s, visibility .14s .25s;
+  pointer-events: none;
+}
+/* Se muestra al pasar el puntero y también al llegar con el teclado. */
+.taz-tip:hover::after, .taz-tip:hover::before,
+.taz-tip:focus-visible::after, .taz-tip:focus-visible::before,
+.taz-tip:has(:focus-visible)::after, .taz-tip:has(:focus-visible)::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* En oscuro el globo se aclara: uno casi negro sobre fondo oscuro no se lee. */
+:root[data-theme="dark"] .taz-tip::after { background: var(--taz-slate-300); color: var(--taz-slate-900); }
+:root[data-theme="dark"] .taz-tip::before { border-top-color: var(--taz-slate-300); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .taz-tip::after { background: var(--taz-slate-300); color: var(--taz-slate-900); }
+  :root:not([data-theme="light"]) .taz-tip::before { border-top-color: var(--taz-slate-300); }
+}
+
+.taz-tip--bottom::after { bottom: auto; top: calc(100% + 8px); }
+.taz-tip--bottom::before {
+  bottom: auto;
+  top: calc(100% + 3px);
+  border-top-color: transparent;
+  border-bottom-color: var(--taz-slate-800);
+}
+:root[data-theme="dark"] .taz-tip--bottom::before { border-top-color: transparent; border-bottom-color: var(--taz-slate-300); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .taz-tip--bottom::before { border-top-color: transparent; border-bottom-color: var(--taz-slate-300); }
+}
+
+/* Sin retardo: para avisos que deben aparecer al instante. */
+.taz-tip--instant::after, .taz-tip--instant::before { transition-delay: 0s; }
+
+/* Con el dedo no hay «pasar por encima»: el tooltip no aparecería nunca y
+   el usuario se quedaría sin la información. En táctil se oculta, y lo que
+   deba saberse va en texto visible. */
+@media (pointer: coarse) {
+  .taz-tip::after, .taz-tip::before { display: none; }
+}
+
+/* --- 11. Calendario ------------------------------------------------------
+   El calendario de <input type="date"> lo dibuja el navegador FUERA del DOM,
+   en su propia capa: ninguna regla CSS lo alcanza. Lo único que se puede
+   decidir sobre él es el tema, vía `color-scheme`. Para controlar su aspecto
+   hay que dibujarlo.
+
+   Estrategia híbrida, que es la que conviene:
+     puntero fino  → este calendario, que sí controlamos
+     táctil        → el selector nativo del sistema, que le gana a cualquier
+                     cosa que hagamos y que el usuario ya sabe usar
+
+   El paquete aporta la apariencia y el contrato de marcado; la aplicación
+   decide qué día se pinta y qué pasa al elegirlo, igual que con los menús.
+   El calendario va dentro de un contenedor con `position: relative`
+   (.taz-datefield) y se muestra con `.is-open`.                            */
+
+.taz-datefield { position: relative; }
+
+.taz-calendar {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 46;
+  width: 292px;
+  padding: 12px;
+  background: var(--taz-surface-raised);
+  color: var(--taz-text);
+  border: 1px solid var(--taz-border);
+  border-radius: var(--taz-radius-lg);
+  box-shadow: var(--taz-elev-3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity .13s ease, transform .13s ease, visibility .13s;
+}
+.taz-calendar.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
+.taz-calendar--right { left: auto; right: 0; }
+.taz-calendar--up { top: auto; bottom: calc(100% + 6px); }
+@media (prefers-reduced-motion: reduce) { .taz-calendar { transition: none; transform: none; } }
+
+/* Con el dedo gana el selector del sistema. */
+@media (pointer: coarse) { .taz-calendar { display: none; } }
+
+.taz-calendar__head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.taz-calendar__title {
+  flex: 1;
+  text-align: center;
+  font-family: var(--taz-font-display);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--taz-text);
+  background: transparent;
+  border: 0;
+  border-radius: var(--taz-radius);
+  padding: 6px 8px;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+.taz-calendar__title:hover { background: var(--taz-surface-sunk); }
+.taz-calendar__title:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+
+.taz-calendar__nav {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--taz-radius);
+  background: transparent;
+  color: var(--taz-text-muted);
+  cursor: pointer;
+}
+.taz-calendar__nav:hover { background: var(--taz-surface-sunk); color: var(--taz-text); }
+.taz-calendar__nav:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+.taz-calendar__nav:disabled { opacity: .35; cursor: not-allowed; background: transparent; }
+
+.taz-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.taz-calendar__dow {
+  display: grid;
+  place-items: center;
+  height: 28px;
+  font-family: var(--taz-font-mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--taz-text-muted);
+}
+
+.taz-calendar__day {
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--taz-radius);
+  background: transparent;
+  color: var(--taz-text);
+  font-family: var(--taz-font-body);
+  font-size: 13.5px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  position: relative;
+  transition: background-color .1s ease;
+}
+.taz-calendar__day:hover:not(:disabled) { background: var(--taz-surface-sunk); }
+.taz-calendar__day:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); z-index: 1; }
+.taz-calendar__day:disabled { color: var(--taz-text-muted); opacity: .4; cursor: not-allowed; }
+
+/* Días del mes vecino: presentes para no romper la retícula, pero apagados. */
+.taz-calendar__day.is-outside { color: var(--taz-text-muted); opacity: .45; }
+
+/* Hoy va con anillo dorado. Es el único acento del componente y marca
+   exactamente una celda: la definición de acento escaso. */
+.taz-calendar__day.is-today { box-shadow: inset 0 0 0 2px var(--taz-accent); font-weight: 600; }
+
+.taz-calendar__day.is-selected {
+  background: var(--taz-primary);
+  color: var(--taz-on-primary);
+  font-weight: 600;
+}
+.taz-calendar__day.is-selected:hover { background: var(--taz-primary-hover); }
+/* Seleccionado y hoy a la vez: gana el relleno, el anillo se aclara. */
+.taz-calendar__day.is-selected.is-today { box-shadow: inset 0 0 0 2px var(--taz-gold-300); }
+
+/* Rango. El tramo intermedio va en cuadrado para que se lea continuo. */
+.taz-calendar__day.is-in-range { background: var(--taz-primary-soft); border-radius: 0; }
+.taz-calendar__day.is-range-start { background: var(--taz-primary); color: var(--taz-on-primary); border-radius: var(--taz-radius) 0 0 var(--taz-radius); }
+.taz-calendar__day.is-range-end   { background: var(--taz-primary); color: var(--taz-on-primary); border-radius: 0 var(--taz-radius) var(--taz-radius) 0; }
+
+/* Punto de evento: para marcar días con junta, plazo o audiencia. */
+.taz-calendar__day.has-event::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--taz-primary);
+}
+.taz-calendar__day.is-selected.has-event::after,
+.taz-calendar__day.is-range-start.has-event::after,
+.taz-calendar__day.is-range-end.has-event::after { background: var(--taz-on-primary); }
+
+.taz-calendar__foot {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--taz-border);
+}
+.taz-calendar__foot > :last-child { margin-left: auto; }
+
+/* --- 12. Horas ----------------------------------------------------------- */
+
+/* El selector de <input type="time"> tiene el mismo problema que el
+   calendario: lo pinta el navegador. Para agenda conviene más una rejilla de
+   horarios disponibles, que además comunica qué está tomado y qué no. */
+
+.taz-timegrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  gap: 6px;
+}
+.taz-timeslot {
+  padding: 9px 6px;
+  border: 1px solid var(--taz-border-strong);
+  border-radius: var(--taz-radius);
+  background: var(--taz-surface);
+  color: var(--taz-text);
+  font-family: var(--taz-font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+.taz-timeslot:hover:not(:disabled) { border-color: var(--taz-primary); background: var(--taz-primary-soft); }
+.taz-timeslot:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+.taz-timeslot.is-selected {
+  background: var(--taz-primary);
+  border-color: var(--taz-primary);
+  color: var(--taz-on-primary);
+  font-weight: 600;
+}
+/* Ocupado: tachado y sin foco. Se muestra en vez de esconderse, para que se
+   entienda que el horario existe pero está tomado. */
+.taz-timeslot:disabled {
+  background: var(--taz-surface-sunk);
+  border-color: var(--taz-border);
+  color: var(--taz-text-muted);
+  cursor: not-allowed;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* Fecha y hora unidas en un solo control. */
+.taz-datetime { display: flex; align-items: stretch; }
+.taz-datetime > .taz-input { border-radius: 0; min-width: 0; }
+.taz-datetime > .taz-input:first-child { border-radius: var(--taz-radius) 0 0 var(--taz-radius); flex: 3; }
+.taz-datetime > .taz-input:last-child  { border-radius: 0 var(--taz-radius) var(--taz-radius) 0; flex: 2; }
+.taz-datetime > * + * { margin-left: -1px; }
+.taz-datetime > .taz-input:focus { position: relative; z-index: 1; }

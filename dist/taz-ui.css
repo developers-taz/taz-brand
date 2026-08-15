@@ -21,7 +21,23 @@
     11. Utilidades de disposición
    ========================================================================== */
 
-/* --- 1. Base y tipografía ------------------------------------------------ */
+/* --- 0. Modelo de caja ---------------------------------------------------
+   Los componentes suponen `border-box`: un campo con width:100% más relleno
+   y borde se sale de su contenedor sin esto. Se aplica solo a lo que lleva
+   una clase `taz-`, para no alterar el resto del proyecto anfitrión — un
+   `* { box-sizing }` global cambiaría maquetaciones ajenas al sistema.     */
+
+[class*="taz-"],
+[class*="taz-"]::before,
+[class*="taz-"]::after { box-sizing: border-box; }
+
+/* --- 1. Base y tipografía ------------------------------------------------
+   Regla del sistema: todo componente que muestre texto declara su `color`
+   desde el token en vez de heredarlo. `color` se resuelve una sola vez donde
+   se declara y baja como valor concreto; si más abajo un contenedor redefine
+   --taz-text (una sección con tema propio, una barra oscura sobre contenido
+   claro), el texto heredado conserva el color del ancestro y termina en
+   claro sobre claro. Declararlo en cada componente lo vuelve inmune.       */
 
 .taz-body {
   background: var(--taz-bg);
@@ -32,9 +48,9 @@
   -webkit-font-smoothing: antialiased;
 }
 
-.taz-h1 { font-family: var(--taz-font-display); font-size: 32px; font-weight: 700; letter-spacing: -.025em; line-height: 1.15; text-wrap: balance; margin: 0; }
-.taz-h2 { font-family: var(--taz-font-display); font-size: 24px; font-weight: 700; letter-spacing: -.02em;  line-height: 1.2;  text-wrap: balance; margin: 0; }
-.taz-h3 { font-family: var(--taz-font-display); font-size: 18px; font-weight: 600; letter-spacing: -.01em;  line-height: 1.3;  margin: 0; }
+.taz-h1 { font-family: var(--taz-font-display); font-size: 32px; font-weight: 700; letter-spacing: -.025em; line-height: 1.15; text-wrap: balance; margin: 0; color: var(--taz-text); }
+.taz-h2 { font-family: var(--taz-font-display); font-size: 24px; font-weight: 700; letter-spacing: -.02em;  line-height: 1.2;  text-wrap: balance; margin: 0; color: var(--taz-text); }
+.taz-h3 { font-family: var(--taz-font-display); font-size: 18px; font-weight: 600; letter-spacing: -.01em;  line-height: 1.3;  margin: 0; color: var(--taz-text); }
 
 .taz-eyebrow {
   font-family: var(--taz-font-mono);
@@ -61,6 +77,32 @@
   background: var(--taz-accent);
   border-radius: 2px;
   margin: 12px 0 0;
+}
+
+/* Encabezado de sección: eyebrow, título y acciones, con línea de cierre.
+   Es la pieza que marca dónde empieza cada bloque de la página. */
+.taz-section-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--taz-border);
+  margin-bottom: 20px;
+}
+.taz-section-head__text { min-width: 0; }
+.taz-section-head h2,
+.taz-section-head h3 { margin-top: 4px; }
+.taz-section-head__actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+/* Variante marcada: la línea de cierre arranca en dorado y se apaga.
+   Una por pantalla — es acento, no decoración de cada título. */
+.taz-section-head--accent {
+  border-bottom-color: transparent;
+  background-image: linear-gradient(to right, var(--taz-accent) 0 44px, var(--taz-border) 44px);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 100% 2px;
 }
 
 /* --- 2. Botones ---------------------------------------------------------- */
@@ -317,12 +359,14 @@
   border: 1px solid var(--taz-border);
   border-radius: var(--taz-radius-lg);
   background: var(--taz-surface);
+  box-shadow: var(--taz-elev-1);
 }
 
 .taz-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  color: var(--taz-text);
 }
 
 .taz-table thead th {
@@ -335,7 +379,9 @@
   color: var(--taz-text-muted);
   background: var(--taz-surface-sunk);
   padding: 11px 16px;
-  border-bottom: 1px solid var(--taz-border);
+  /* Línea firme, no filete: es la frontera entre el encabezado y los datos,
+     la separación más importante de la tabla. */
+  border-bottom: 1px solid var(--taz-border-strong);
   white-space: nowrap;
 }
 
@@ -458,9 +504,48 @@
 
 .taz-card {
   background: var(--taz-surface);
+  color: var(--taz-text);
   border: 1px solid var(--taz-border);
   border-radius: var(--taz-radius-lg);
-  box-shadow: 0 1px 2px rgb(19 24 32 / .05);
+  box-shadow: var(--taz-elev-1);
+}
+/* Elevada: para lo que flota sobre el contenido o pide atención. */
+.taz-card--raised { box-shadow: var(--taz-elev-2); }
+/* Plana: dentro de otra superficie, donde la sombra sobraría. */
+.taz-card--flat { box-shadow: none; }
+/* Interactiva: la tarjeta entera es un destino. */
+.taz-card--link { cursor: pointer; transition: box-shadow .16s ease, border-color .16s ease; }
+.taz-card--link:hover { box-shadow: var(--taz-elev-2); border-color: var(--taz-border-strong); }
+.taz-card--link:focus-visible { outline: none; box-shadow: var(--taz-focus-ring); }
+
+/* Panel: bloque de página a ancho completo. Igual que la tarjeta pero sin
+   pretensión de objeto suelto — sirve para seccionar una vista larga. */
+.taz-panel {
+  background: var(--taz-surface);
+  color: var(--taz-text);
+  border: 1px solid var(--taz-border);
+  border-radius: var(--taz-radius-lg);
+  box-shadow: var(--taz-elev-1);
+}
+.taz-panel__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--taz-bg-subtle);
+  border-bottom: 1px solid var(--taz-border);
+  border-radius: var(--taz-radius-lg) var(--taz-radius-lg) 0 0;
+}
+.taz-panel__head > :last-child:not(:only-child) { margin-left: auto; }
+.taz-panel__body { padding: 20px; }
+
+/* Pozo: zona hundida dentro de una superficie. Para resúmenes, bloques de
+   código, totales — cualquier cosa que deba leerse como «aparte». */
+.taz-well {
+  background: var(--taz-surface-sunk);
+  color: var(--taz-text);
+  border-radius: var(--taz-radius);
+  padding: 14px 16px;
 }
 .taz-card__head {
   padding: 16px 20px;
@@ -521,15 +606,41 @@
 /* --- 10. Spinner --------------------------------------------------------- */
 
 /* Usa el SVG de la espiral (ver README). Los dos arcos giran en sentidos
-   opuestos, que es lo que la vuelve reconocible como Taz. */
+   opuestos, que es lo que la vuelve reconocible como Taz.
+
+   Tres cosas que hacen que gire de verdad en vez de parecer una secuencia:
+
+   1. `linear`, nunca easing. Una curva de aceleración sobre un giro cíclico
+      llega a velocidad cero al cerrar la vuelta: se ve una detención en cada
+      ciclo, que es justo lo que delata a un GIF.
+   2. Períodos distintos y sin relación simple (2,6 s y 1,5 s). Con el mismo
+      período los dos arcos se realinean en cada vuelta y eso se percibe como
+      un latido; con períodos dispares el conjunto no se repite a la vista
+      hasta pasados varios minutos.
+
+      El arco interior gira MÁS RÁPIDO que el exterior, no al revés: en un
+      vórtice real la velocidad angular crece hacia el centro. Al invertirlo
+      el conjunto deja de leerse como tornado y parece dos anillos sueltos.
+   3. El desfase inicial va en `stroke-dashoffset`, no en un atributo
+      `transform`. Si el SVG trae `transform="rotate(...)"` y la animación
+      escribe `transform` por CSS, el CSS gana y el arco salta al arrancar. */
 .taz-spinner { display: inline-block; vertical-align: middle; }
 .taz-spinner__outer,
-.taz-spinner__inner { transform-origin: 50% 50%; }
+.taz-spinner__inner {
+  transform-origin: 50% 50%;
+  transform-box: view-box; /* el origen se mide contra el viewBox, no contra el trazo */
+}
 @media (prefers-reduced-motion: no-preference) {
-  .taz-spinner__outer { animation: taz-spin 2.4s cubic-bezier(.6,.05,.3,.95) infinite; }
-  .taz-spinner__inner { animation: taz-spin 2.4s cubic-bezier(.6,.05,.3,.95) infinite reverse; }
+  .taz-spinner__outer { animation: taz-spin 2.6s linear infinite; }
+  .taz-spinner__inner { animation: taz-spin 1.5s linear infinite reverse; }
 }
 @keyframes taz-spin { to { transform: rotate(360deg); } }
+
+/* Variantes de ritmo. Mantienen la proporción entre los dos arcos. */
+.taz-spinner--slow .taz-spinner__outer { animation-duration: 4.2s; }
+.taz-spinner--slow .taz-spinner__inner { animation-duration: 2.4s; }
+.taz-spinner--fast .taz-spinner__outer { animation-duration: 1.6s; }
+.taz-spinner--fast .taz-spinner__inner { animation-duration: .9s; }
 
 /* --- 11. Utilidades de disposición --------------------------------------- */
 
@@ -540,6 +651,10 @@
 .taz-row--end { justify-content: flex-end; }
 .taz-grid    { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 .taz-divider { border: 0; border-top: 1px solid var(--taz-border); margin: 0; }
+/* Separación entre bloques de una misma vista. */
+.taz-divider--strong  { border-top-width: 2px; }
+/* Separación entre secciones mayores: la línea respira a ambos lados. */
+.taz-divider--section { border-top: 2px solid var(--taz-border); margin: 36px 0; }
 .taz-spacer  { flex: 1 1 auto; }
 
 /* --- 12. Adaptación a pantalla pequeña ------------------------------------ */
@@ -608,4 +723,171 @@
   .taz-row--stack-sm > .taz-btn { width: 100%; }
   .taz-card__foot { flex-wrap: wrap; }
   .taz-card__body, .taz-card__head, .taz-card__foot { padding-left: 16px; padding-right: 16px; }
+}
+
+/* --- 13. Fechas ---------------------------------------------------------- */
+
+/* Sobre <input type="date"> nativo. El calendario lo pinta el navegador y no
+   se puede estilar; lo que sí se controla es que salga en el tema correcto,
+   y eso lo resuelve `color-scheme` en tokens.css. A cambio se obtienen gratis
+   el teclado, el formato local y el selector nativo del teléfono. */
+.taz-date {
+  /* Hereda todo de .taz-input: usar `class="taz-input taz-date"`. */
+  min-height: 40px; /* Safari no le da alto propio a los campos de fecha. */
+}
+.taz-date::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 3px;
+  opacity: .65;
+  transition: opacity .12s ease, background-color .12s ease;
+}
+.taz-date::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  background: var(--taz-surface-sunk);
+}
+/* Cuando el campo está vacío, los separadores del formato se ven como texto
+   activo. Bajarlos al tono secundario evita que parezca que hay dato. */
+.taz-date:not(:focus):invalid::-webkit-datetime-edit { color: var(--taz-text-muted); }
+
+/* Hora. Mismo trato que la fecha; el reloj también lo pinta el navegador.
+   Usar `class="taz-input taz-date taz-time"` sobre <input type="time">. */
+.taz-time { max-width: 150px; font-variant-numeric: tabular-nums; }
+.taz-time--full { max-width: none; }
+
+/* Rango: dos fechas unidas, con el separador en medio. */
+.taz-daterange { display: flex; align-items: stretch; }
+.taz-daterange > .taz-input { border-radius: 0; flex: 1; min-width: 0; }
+.taz-daterange > :first-child { border-radius: var(--taz-radius) 0 0 var(--taz-radius); }
+.taz-daterange > :last-child  { border-radius: 0 var(--taz-radius) var(--taz-radius) 0; }
+.taz-daterange > * + * { margin-left: -1px; }
+.taz-daterange > .taz-input:focus { position: relative; z-index: 1; }
+.taz-daterange__sep {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-family: var(--taz-font-mono);
+  font-size: 12px;
+  color: var(--taz-text-muted);
+  background: var(--taz-surface-sunk);
+  border: 1px solid var(--taz-border-strong);
+}
+
+/* --- 14. Archivos -------------------------------------------------------- */
+
+/* El <input type="file"> nativo no se puede estilar, así que se oculta sin
+   sacarlo del flujo de accesibilidad y se usa la etiqueta como control.
+   El input debe ir DENTRO de la etiqueta o enlazado con `for`. */
+.taz-file { display: inline-flex; }
+.taz-file input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+/* El foco del teclado cae en el input invisible: hay que pintarlo en la
+   etiqueta, o el usuario que navega con Tab no ve dónde está. */
+.taz-file input[type="file"]:focus-visible + .taz-file__label,
+.taz-file input[type="file"]:focus-visible ~ .taz-dropzone { box-shadow: var(--taz-focus-ring); }
+.taz-file__label { cursor: pointer; }
+
+/* Zona de arrastre. La clase .is-dragover la pone la aplicación en
+   dragenter/dragover y la quita en dragleave/drop. */
+.taz-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 28px 20px;
+  border: 1.5px dashed var(--taz-border-strong);
+  border-radius: var(--taz-radius-lg);
+  background: var(--taz-bg-subtle);
+  color: var(--taz-text);
+  cursor: pointer;
+  transition: border-color .14s ease, background-color .14s ease;
+}
+.taz-dropzone:hover { border-color: var(--taz-primary); }
+.taz-dropzone.is-dragover {
+  border-color: var(--taz-primary);
+  border-style: solid;
+  background: var(--taz-primary-soft);
+}
+.taz-dropzone.is-invalid { border-color: var(--taz-danger); background: var(--taz-danger-bg); }
+.taz-dropzone__icon  { color: var(--taz-text-muted); }
+.taz-dropzone__title { font-family: var(--taz-font-display); font-weight: 600; font-size: 15px; }
+.taz-dropzone__title em { font-style: normal; color: var(--taz-primary-text); text-decoration: underline; }
+.taz-dropzone__hint  { font-size: 13px; color: var(--taz-text-muted); }
+.taz-dropzone--sm { padding: 16px; flex-direction: row; gap: 12px; text-align: left; }
+
+/* Lista de adjuntos. */
+.taz-filelist { display: flex; flex-direction: column; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.taz-fileitem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--taz-surface);
+  color: var(--taz-text);
+  border: 1px solid var(--taz-border);
+  border-radius: var(--taz-radius);
+}
+.taz-fileitem__icon { color: var(--taz-text-muted); display: grid; place-items: center; }
+.taz-fileitem__name {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.taz-fileitem__meta {
+  font-family: var(--taz-font-mono);
+  font-size: 11.5px;
+  color: var(--taz-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.taz-fileitem--error { border-color: color-mix(in srgb, var(--taz-danger) 45%, transparent); background: var(--taz-danger-bg); }
+.taz-fileitem--error .taz-fileitem__icon,
+.taz-fileitem--error .taz-fileitem__meta { color: var(--taz-danger-text); }
+.taz-fileitem--done .taz-fileitem__icon { color: var(--taz-success-text); }
+/* La barra de progreso ocupa el ancho completo bajo las tres columnas. */
+.taz-fileitem .taz-meter { grid-column: 1 / -1; margin-top: 2px; }
+
+/* --- 15. Accesibilidad --------------------------------------------------- */
+
+/* Visible solo para lectores de pantalla. Imprescindible para dar nombre a
+   un control que solo muestra un icono, o para el texto que describe un
+   tooltip (el contenido generado por CSS no lo anuncia ningún lector). */
+.taz-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+/* Enlace de salto: invisible hasta que recibe el foco con Tab. */
+.taz-skip:focus-visible {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 999;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 10px 16px;
+  clip-path: none;
+  background: var(--taz-surface-raised);
+  color: var(--taz-primary-text);
+  border-radius: var(--taz-radius);
+  box-shadow: var(--taz-elev-3);
 }

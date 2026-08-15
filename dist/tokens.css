@@ -54,34 +54,56 @@
   /* --- Semánticos -------------------------------------------------------- */
   --taz-success:      #2e9e6b;
   --taz-success-text: #1f7d52;
-  --taz-success-bg:   #e8f6ef;
+  --taz-success-bg:   #ddf1e6;
   --taz-warning:      #d9622b;
   --taz-warning-text: #a8471a;
-  --taz-warning-bg:   #fdeee5;
+  --taz-warning-bg:   #fce6d8;
   --taz-danger:       #c93a38;
   --taz-danger-text:  #a82f2d;
-  --taz-danger-bg:    #fbebeb;
+  --taz-danger-bg:    #f9e0e0;
   --taz-info:         #2c8ba8;
   --taz-info-text:    #1f6b83;
-  --taz-info-bg:      #e7f3f7;
+  --taz-info-bg:      #dcecf2;
 
-  /* --- Roles de aplicación (tema claro) ---------------------------------- */
-  --taz-bg:            #ffffff;
-  --taz-bg-subtle:     var(--taz-slate-50);
-  --taz-surface:       #ffffff;
-  --taz-surface-sunk:  var(--taz-slate-100);
-  --taz-border:        var(--taz-slate-200);
-  --taz-border-strong: var(--taz-slate-300);
+  /* --- Escalera de superficies (tema claro) ------------------------------
+     Cuatro planos, del más hundido al más elevado. Dos errores que evita:
+     pintar la página y las tarjetas del mismo blanco (sin dos planos nada
+     se levanta), y dejar el peldaño hundido pegado al lienzo (entonces el
+     encabezado de una tabla se lee como un agujero a la página, no como
+     una banda propia).
+
+     Los saltos entre peldaños son parejos, ~15 % de luminancia cada uno:
+       blanco 1,000 → lienzo 0,852 → hundido 0,740                        */
+  --taz-surface-sunk:   #d8e0ec; /* pozos: encabezados de tabla, afijos, hover */
+  --taz-bg:             #eaeef5; /* lienzo de la página */
+  --taz-bg-subtle:      #f5f7fb; /* relleno tenue DENTRO de una superficie */
+  --taz-surface:        #ffffff; /* tarjetas, barras, paneles */
+  --taz-surface-raised: #ffffff; /* menús, diálogos, avisos — se distingue por sombra */
+
+  --taz-border:        #d5dce6; /* filete decorativo */
+  --taz-border-strong: #878fa0; /* contorno de controles — 3,2:1 sobre blanco (WCAG 1.4.11) */
 
   --taz-text:          var(--taz-slate-800);
-  --taz-text-muted:    var(--taz-slate-500);
+  /* Slate 600 y no 500: el texto secundario también cae sobre el peldaño
+     hundido (encabezados de tabla), y ahí el 500 daba 3,96:1. Con el 600
+     queda en 5,1:1 sobre hundido y 6,8:1 sobre blanco. */
+  --taz-text-muted:    var(--taz-slate-600);
   --taz-text-inverse:  #ffffff;
+
+  /* --- Elevación ---------------------------------------------------------
+     Teñidas con el azul pizarra de la marca, no con negro puro: una sombra
+     neutra sobre un lienzo frío se ve sucia. Dos capas cada una — una de
+     contacto y otra de ambiente.                                          */
+  --taz-elev-1: 0 1px 2px rgb(29 42 68 / .07), 0 1px 1px rgb(29 42 68 / .04);
+  --taz-elev-2: 0 1px 2px rgb(29 42 68 / .06), 0 4px 10px -2px rgb(29 42 68 / .10);
+  --taz-elev-3: 0 2px 4px rgb(29 42 68 / .06), 0 12px 28px -6px rgb(29 42 68 / .16);
+  --taz-elev-4: 0 4px 8px rgb(29 42 68 / .08), 0 24px 56px -12px rgb(29 42 68 / .24);
 
   --taz-primary:        var(--taz-blue-500);
   --taz-primary-hover:  var(--taz-blue-600);
   --taz-primary-active: var(--taz-blue-700);
   --taz-primary-text:   var(--taz-blue-600);
-  --taz-primary-soft:   var(--taz-blue-50);
+  --taz-primary-soft:   #e3ecf9;
   --taz-on-primary:     #ffffff;
 
   --taz-accent:       var(--taz-gold-400);
@@ -94,6 +116,12 @@
   --taz-radius:     4px;
   --taz-radius-lg:  8px;
 
+  /* Le dice al navegador de qué tema son los controles que él mismo pinta y
+     que el CSS no alcanza: el calendario de <input type="date">, la lista
+     desplegable de <select>, las barras de desplazamiento y el autocompletado.
+     Sin esto, en tema oscuro el calendario sale blanco. */
+  color-scheme: light;
+
   /* --- Tipografía ---------------------------------------------------------
      Pilas del sistema: cargan al instante y no dependen de un CDN. Si un
      proyecto incorpora una fuente propia, redefine estas tres variables y
@@ -105,25 +133,38 @@
 
 /* --- Tema oscuro ---------------------------------------------------------
    Solo se redefinen roles; las escalas quedan intactas.
+   En oscuro la sombra casi no se ve, así que la separación entre planos la
+   hace la escalera de superficies y el borde, no la elevación.
    Se aplica cuando el SO está en oscuro y el usuario no forzó claro...       */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --taz-bg:            var(--taz-ink);
-    --taz-bg-subtle:     var(--taz-slate-900);
-    --taz-surface:       var(--taz-slate-900);
-    --taz-surface-sunk:  #10151c;
-    --taz-border:        #2b323d;
-    --taz-border-strong: #3d4551;
+    /* En oscuro el peldaño hundido SUBE en vez de bajar: bajo el lienzo ya
+       no queda recorrido antes del negro, y un encabezado más oscuro que la
+       página se confunde con ella. Los saltos quedan parejos:
+         lienzo 0,006 → superficie 0,015 → hundido 0,028 → elevada 0,040    */
+    --taz-bg:             #0f1319;
+    --taz-bg-subtle:      #161c24;
+    --taz-surface:        #1a212b;
+    --taz-surface-sunk:   #262f3b;
+    --taz-surface-raised: #2f3945;
+
+    --taz-border:        #2c3542;
+    --taz-border-strong: #626e7e; /* 3,2:1 sobre la superficie oscura */
 
     --taz-text:          #e6eaf0;
     --taz-text-muted:    var(--taz-slate-400);
     --taz-text-inverse:  var(--taz-slate-900);
 
+    --taz-elev-1: 0 1px 2px rgb(0 0 0 / .30);
+    --taz-elev-2: 0 2px 6px rgb(0 0 0 / .40);
+    --taz-elev-3: 0 8px 24px -6px rgb(0 0 0 / .55);
+    --taz-elev-4: 0 20px 48px -12px rgb(0 0 0 / .70);
+
     --taz-primary:        var(--taz-blue-500);
     --taz-primary-hover:  var(--taz-blue-400);
     --taz-primary-active: var(--taz-blue-300);
     --taz-primary-text:   var(--taz-blue-300); /* 5,2:1 sobre el fondo oscuro */
-    --taz-primary-soft:   #1b2b40;
+    --taz-primary-soft:   #1e3049;
     --taz-on-primary:     #ffffff;
 
     --taz-accent:       var(--taz-gold-400);
@@ -142,27 +183,36 @@
     --taz-info-bg:      #102c36;
 
     --taz-focus-ring: 0 0 0 3px rgb(151 180 218 / 0.45);
+
+    color-scheme: dark;
   }
 }
 
 /* ...y también cuando el usuario fuerza oscuro explícitamente. */
 :root[data-theme="dark"] {
-  --taz-bg:            var(--taz-ink);
-  --taz-bg-subtle:     var(--taz-slate-900);
-  --taz-surface:       var(--taz-slate-900);
-  --taz-surface-sunk:  #10151c;
-  --taz-border:        #2b323d;
-  --taz-border-strong: #3d4551;
+  --taz-bg:             #0f1319;
+  --taz-bg-subtle:      #161c24;
+  --taz-surface:        #1a212b;
+  --taz-surface-sunk:   #262f3b; /* sube, no baja: ver el bloque anterior */
+  --taz-surface-raised: #2f3945;
+
+  --taz-border:        #2c3542;
+  --taz-border-strong: #626e7e;
 
   --taz-text:          #e6eaf0;
   --taz-text-muted:    var(--taz-slate-400);
   --taz-text-inverse:  var(--taz-slate-900);
 
+  --taz-elev-1: 0 1px 2px rgb(0 0 0 / .30);
+  --taz-elev-2: 0 2px 6px rgb(0 0 0 / .40);
+  --taz-elev-3: 0 8px 24px -6px rgb(0 0 0 / .55);
+  --taz-elev-4: 0 20px 48px -12px rgb(0 0 0 / .70);
+
   --taz-primary:        var(--taz-blue-500);
   --taz-primary-hover:  var(--taz-blue-400);
   --taz-primary-active: var(--taz-blue-300);
   --taz-primary-text:   var(--taz-blue-300);
-  --taz-primary-soft:   #1b2b40;
+  --taz-primary-soft:   #1e3049;
   --taz-on-primary:     #ffffff;
 
   --taz-accent:       var(--taz-gold-400);
@@ -181,4 +231,6 @@
   --taz-info-bg:      #102c36;
 
   --taz-focus-ring: 0 0 0 3px rgb(151 180 218 / 0.45);
+
+  color-scheme: dark;
 }

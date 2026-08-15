@@ -1,0 +1,605 @@
+<title>Profundidad en Tema Claro</title>
+
+<style>
+/* ═══ Tokens nuevos — también visten esta página ════════════════════════ */
+:root{
+--taz-blue-50:#f1f5fb;--taz-blue-100:#dee9f5;--taz-blue-200:#bfd2ea;--taz-blue-300:#97b4da;--taz-blue-400:#6c94c8;--taz-blue-500:#4477b7;--taz-blue-600:#35619b;--taz-blue-700:#2a4d7c;--taz-blue-800:#21395b;--taz-blue-900:#17273d;
+--taz-gold-300:#efcd57;--taz-gold-400:#e8bb2f;--taz-gold-500:#d3a61c;--taz-gold-700:#8a660d;
+--taz-slate-400:#94a0af;--taz-slate-500:#6c7788;--taz-slate-600:#525c6b;--taz-slate-800:#2a313a;--taz-slate-900:#1a1f26;--taz-ink:#131820;
+--taz-success:#2e9e6b;--taz-success-text:#1f7d52;--taz-success-bg:#ddf1e6;
+--taz-warning:#d9622b;--taz-warning-text:#a8471a;--taz-warning-bg:#fce6d8;
+--taz-danger:#c93a38;--taz-danger-text:#a82f2d;--taz-danger-bg:#f9e0e0;
+--taz-info:#2c8ba8;--taz-info-text:#1f6b83;--taz-info-bg:#dcecf2;
+--taz-surface-sunk:#d8e0ec;--taz-bg:#eaeef5;--taz-bg-subtle:#f5f7fb;--taz-surface:#fff;--taz-surface-raised:#fff;
+--taz-border:#d5dce6;--taz-border-strong:#878fa0;
+--taz-text:var(--taz-slate-800);--taz-text-muted:var(--taz-slate-600);
+--taz-elev-1:0 1px 2px rgb(29 42 68 / .07), 0 1px 1px rgb(29 42 68 / .04);
+--taz-elev-2:0 1px 2px rgb(29 42 68 / .06), 0 4px 10px -2px rgb(29 42 68 / .10);
+--taz-elev-3:0 2px 4px rgb(29 42 68 / .06), 0 12px 28px -6px rgb(29 42 68 / .16);
+--taz-elev-4:0 4px 8px rgb(29 42 68 / .08), 0 24px 56px -12px rgb(29 42 68 / .24);
+--taz-primary:var(--taz-blue-500);--taz-primary-hover:var(--taz-blue-600);--taz-primary-text:var(--taz-blue-600);--taz-primary-soft:#e3ecf9;--taz-on-primary:#fff;
+--taz-accent:var(--taz-gold-400);--taz-accent-hover:var(--taz-gold-500);--taz-accent-text:var(--taz-gold-700);--taz-on-accent:var(--taz-slate-900);
+--taz-focus-ring:0 0 0 3px rgb(68 119 183 / .40);--taz-radius:4px;--taz-radius-lg:8px;
+--taz-font-display:"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,sans-serif;
+--taz-font-body:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,sans-serif;
+--taz-font-mono:ui-monospace,"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",monospace;
+--taz-chevron:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%236c7788' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--taz-bg:#0f1319;--taz-bg-subtle:#161c24;--taz-surface:#1a212b;--taz-surface-sunk:#262f3b;--taz-surface-raised:#2f3945;
+--taz-border:#2c3542;--taz-border-strong:#626e7e;--taz-text:#e6eaf0;--taz-text-muted:var(--taz-slate-400);
+--taz-elev-1:0 1px 2px rgb(0 0 0 / .30);--taz-elev-2:0 2px 6px rgb(0 0 0 / .40);
+--taz-elev-3:0 8px 24px -6px rgb(0 0 0 / .55);--taz-elev-4:0 20px 48px -12px rgb(0 0 0 / .70);
+--taz-primary-text:var(--taz-blue-300);--taz-primary-soft:#1e3049;--taz-accent-text:var(--taz-gold-300);
+--taz-success-text:#56c493;--taz-success-bg:#123024;--taz-warning-text:#f0894d;--taz-warning-bg:#3a1e0f;
+--taz-danger-text:#ea6f6d;--taz-danger-bg:#3a1717;--taz-info-text:#5cb5cf;--taz-info-bg:#102c36;
+--taz-focus-ring:0 0 0 3px rgb(151 180 218 / .45);
+--taz-chevron:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%2394a0af' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}}
+:root[data-theme="dark"]{
+--taz-bg:#0f1319;--taz-bg-subtle:#161c24;--taz-surface:#1a212b;--taz-surface-sunk:#262f3b;--taz-surface-raised:#2f3945;
+--taz-border:#2c3542;--taz-border-strong:#626e7e;--taz-text:#e6eaf0;--taz-text-muted:var(--taz-slate-400);
+--taz-elev-1:0 1px 2px rgb(0 0 0 / .30);--taz-elev-2:0 2px 6px rgb(0 0 0 / .40);
+--taz-elev-3:0 8px 24px -6px rgb(0 0 0 / .55);--taz-elev-4:0 20px 48px -12px rgb(0 0 0 / .70);
+--taz-primary-text:var(--taz-blue-300);--taz-primary-soft:#1e3049;--taz-accent-text:var(--taz-gold-300);
+--taz-success-text:#56c493;--taz-success-bg:#123024;--taz-warning-text:#f0894d;--taz-warning-bg:#3a1e0f;
+--taz-danger-text:#ea6f6d;--taz-danger-bg:#3a1717;--taz-info-text:#5cb5cf;--taz-info-bg:#102c36;
+--taz-focus-ring:0 0 0 3px rgb(151 180 218 / .45);
+--taz-chevron:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%2394a0af' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* ═══ Escenarios: cada uno reescribe los tokens en su contenedor ════════ */
+/* ANTES — v1.1: página y tarjeta comparten el blanco puro. */
+.esc--antes{
+--taz-bg:#fff;--taz-bg-subtle:#f7f8fa;--taz-surface:#fff;--taz-surface-raised:#fff;--taz-surface-sunk:#edeff3;
+--taz-border:#dde1e8;--taz-border-strong:#c3c9d3;
+--taz-text:#2a313a;--taz-text-muted:#6c7788;--taz-primary-soft:#f1f5fb;
+--taz-success-bg:#e8f6ef;--taz-warning-bg:#fdeee5;--taz-danger-bg:#fbebeb;--taz-info-bg:#e7f3f7;
+--taz-primary-text:#35619b;--taz-accent-text:#8a660d;
+--taz-elev-1:0 1px 2px rgb(19 24 32 / .05);--taz-elev-2:0 1px 2px rgb(19 24 32 / .05);
+--taz-elev-3:0 6px 24px -8px rgb(19 24 32 / .35);--taz-elev-4:0 24px 60px -20px rgb(19 24 32 / .55);
+}
+/* DESPUÉS — propuesta v1.2, forzada a claro. */
+.esc--despues{
+--taz-surface-sunk:#d8e0ec;--taz-bg:#eaeef5;--taz-bg-subtle:#f5f7fb;--taz-surface:#fff;--taz-surface-raised:#fff;
+--taz-border:#d5dce6;--taz-border-strong:#878fa0;
+--taz-text:#2a313a;--taz-text-muted:#525c6b;--taz-primary-soft:#e3ecf9;
+--taz-success-bg:#ddf1e6;--taz-warning-bg:#fce6d8;--taz-danger-bg:#f9e0e0;--taz-info-bg:#dcecf2;
+--taz-primary-text:#35619b;--taz-accent-text:#8a660d;
+--taz-elev-1:0 1px 2px rgb(29 42 68 / .07), 0 1px 1px rgb(29 42 68 / .04);
+--taz-elev-2:0 1px 2px rgb(29 42 68 / .06), 0 4px 10px -2px rgb(29 42 68 / .10);
+--taz-elev-3:0 2px 4px rgb(29 42 68 / .06), 0 12px 28px -6px rgb(29 42 68 / .16);
+--taz-elev-4:0 4px 8px rgb(29 42 68 / .08), 0 24px 56px -12px rgb(29 42 68 / .24);
+}
+/* La propuesta en oscuro, para confirmar que no se rompió nada. */
+.esc--oscuro{
+--taz-bg:#0f1319;--taz-bg-subtle:#161c24;--taz-surface:#1a212b;--taz-surface-sunk:#262f3b;--taz-surface-raised:#2f3945;
+--taz-border:#2c3542;--taz-border-strong:#626e7e;--taz-text:#e6eaf0;--taz-text-muted:#94a0af;
+--taz-primary-soft:#1e3049;--taz-primary-text:#97b4da;--taz-accent-text:#efcd57;
+--taz-success-text:#56c493;--taz-success-bg:#123024;--taz-warning-text:#f0894d;--taz-warning-bg:#3a1e0f;
+--taz-danger-text:#ea6f6d;--taz-danger-bg:#3a1717;--taz-info-text:#5cb5cf;--taz-info-bg:#102c36;
+--taz-elev-1:0 1px 2px rgb(0 0 0 / .30);--taz-elev-2:0 2px 6px rgb(0 0 0 / .40);
+--taz-elev-3:0 8px 24px -6px rgb(0 0 0 / .55);--taz-elev-4:0 20px 48px -12px rgb(0 0 0 / .70);
+--taz-chevron:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%2394a0af' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* ═══ Componentes ═══════════════════════════════════════════════════════ */
+*{box-sizing:border-box}
+.taz-h2{font-family:var(--taz-font-display);font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin:0;color:var(--taz-text)}
+.taz-h3{font-family:var(--taz-font-display);font-size:18px;font-weight:600;letter-spacing:-.01em;margin:0;color:var(--taz-text)}
+.taz-eyebrow{font-family:var(--taz-font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--taz-text-muted)}
+.taz-muted{color:var(--taz-text-muted)}
+.taz-mono{font-family:var(--taz-font-mono)}
+.taz-rule-accent{border:0;height:3px;width:44px;background:var(--taz-accent);border-radius:2px;margin:12px 0 0}
+.taz-section-head{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-bottom:12px;border-bottom:2px solid var(--taz-border);margin-bottom:20px}
+.taz-section-head__text{min-width:0}
+.taz-section-head h3{margin-top:4px}
+.taz-section-head__actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.taz-section-head--accent{border-bottom-color:transparent;background-image:linear-gradient(to right,var(--taz-accent) 0 44px,var(--taz-border) 44px);background-repeat:no-repeat;background-position:left bottom;background-size:100% 2px}
+.taz-btn{--_bg:transparent;--_fg:var(--taz-text);--_bd:transparent;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--taz-font-body);font-size:14.5px;font-weight:600;line-height:1.2;padding:10px 18px;border:1px solid var(--_bd);border-radius:var(--taz-radius);background:var(--_bg);color:var(--_fg);cursor:pointer;white-space:nowrap;transition:background-color .14s,border-color .14s}
+.taz-btn--primary{--_bg:var(--taz-primary);--_fg:var(--taz-on-primary)}
+.taz-btn--primary:hover{--_bg:var(--taz-primary-hover)}
+.taz-btn--accent{--_bg:var(--taz-accent);--_fg:var(--taz-on-accent)}
+.taz-btn--ghost{--_fg:var(--taz-primary-text);--_bd:var(--taz-border-strong)}
+.taz-btn--ghost:hover{--_bg:var(--taz-surface-sunk)}
+.taz-btn--sm{font-size:13px;padding:6px 12px}
+.taz-field{display:flex;flex-direction:column;gap:6px}
+.taz-label{font-size:13.5px;font-weight:600;display:flex;gap:6px;color:var(--taz-text)}
+.taz-input,.taz-select{width:100%;font-family:var(--taz-font-body);font-size:14.5px;line-height:1.45;color:var(--taz-text);background:var(--taz-surface);border:1px solid var(--taz-border-strong);border-radius:var(--taz-radius);padding:9px 12px}
+.taz-input::placeholder{color:var(--taz-text-muted)}
+.taz-input:focus,.taz-select:focus{outline:none;border-color:var(--taz-primary);box-shadow:var(--taz-focus-ring)}
+.taz-select{appearance:none;-webkit-appearance:none;padding-right:34px;background-image:var(--taz-chevron);background-repeat:no-repeat;background-position:right 12px center;cursor:pointer}
+.taz-hint{font-size:12.5px;color:var(--taz-text-muted)}
+.taz-table-wrap{overflow-x:auto;border:1px solid var(--taz-border);border-radius:var(--taz-radius-lg);background:var(--taz-surface);box-shadow:var(--taz-elev-1)}
+.taz-table{width:100%;border-collapse:collapse;font-size:14px;color:var(--taz-text)}
+.taz-table thead th{text-align:left;font-family:var(--taz-font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--taz-text-muted);background:var(--taz-surface-sunk);padding:11px 16px;border-bottom:1px solid var(--taz-border-strong);white-space:nowrap}
+.taz-table tbody td{padding:12px 16px;border-bottom:1px solid var(--taz-border)}
+.taz-table tbody tr:last-child td{border-bottom:0}
+.taz-table tfoot td{padding:12px 16px;border-top:1px solid var(--taz-border-strong);font-weight:600;background:var(--taz-surface-sunk)}
+.taz-table .taz-num,.taz-table th.taz-num{text-align:right;font-variant-numeric:tabular-nums}
+.taz-table tbody tr:hover{background:var(--taz-primary-soft)}
+.taz-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--taz-font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:99px;white-space:nowrap;background:var(--taz-surface-sunk);color:var(--taz-text-muted)}
+.taz-badge--success{background:var(--taz-success-bg);color:var(--taz-success-text)}
+.taz-badge--warning{background:var(--taz-warning-bg);color:var(--taz-warning-text)}
+.taz-badge--danger{background:var(--taz-danger-bg);color:var(--taz-danger-text)}
+.taz-dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:currentColor}
+.taz-alert{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:14px 16px;border-radius:var(--taz-radius-lg);border:1px solid;font-size:14px}
+.taz-alert__title{font-family:var(--taz-font-display);font-weight:600;font-size:15px;margin:0 0 3px}
+.taz-alert__icon{font-family:var(--taz-font-mono);font-weight:700}
+.taz-alert--info{background:var(--taz-info-bg);color:var(--taz-info-text);border-color:color-mix(in srgb,var(--taz-info-text) 30%,transparent)}
+.taz-alert--warning{background:var(--taz-warning-bg);color:var(--taz-warning-text);border-color:color-mix(in srgb,var(--taz-warning-text) 30%,transparent)}
+.taz-card{background:var(--taz-surface);color:var(--taz-text);border:1px solid var(--taz-border);border-radius:var(--taz-radius-lg);box-shadow:var(--taz-elev-1)}
+.taz-card--raised{box-shadow:var(--taz-elev-2)}
+.taz-card__body{padding:20px}
+.taz-panel{background:var(--taz-surface);color:var(--taz-text);border:1px solid var(--taz-border);border-radius:var(--taz-radius-lg);box-shadow:var(--taz-elev-1)}
+.taz-panel__head{display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--taz-bg-subtle);border-bottom:1px solid var(--taz-border);border-radius:var(--taz-radius-lg) var(--taz-radius-lg) 0 0}
+.taz-panel__head>:last-child:not(:only-child){margin-left:auto}
+.taz-panel__body{padding:20px}
+.taz-well{background:var(--taz-surface-sunk);color:var(--taz-text);border-radius:var(--taz-radius);padding:14px 16px}
+.taz-stat__label{font-family:var(--taz-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--taz-text-muted)}
+.taz-stat__value{font-family:var(--taz-font-display);font-size:30px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1;margin-top:4px;color:var(--taz-text)}
+.taz-stat__delta{font-family:var(--taz-font-mono);font-size:12.5px;color:var(--taz-success-text)}
+.taz-meter{height:6px;background:var(--taz-surface-sunk);border-radius:99px;overflow:hidden;margin-top:14px}
+.taz-meter>i{display:block;height:100%;background:var(--taz-primary);border-radius:99px}
+.taz-toast{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:13px 14px;background:var(--taz-surface-raised);border:1px solid var(--taz-border);border-left:3px solid var(--taz-success);border-radius:var(--taz-radius-lg);box-shadow:var(--taz-elev-3);font-size:14px}
+.taz-toast__title{font-family:var(--taz-font-display);font-weight:600;font-size:14.5px;margin:0 0 2px;color:var(--taz-text)}
+.taz-toast__body{color:var(--taz-text-muted);font-size:13.5px}
+.taz-toast__icon{font-family:var(--taz-font-mono);font-weight:700;color:var(--taz-success-text)}
+.taz-stack{display:flex;flex-direction:column;gap:16px}
+.taz-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.taz-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.taz-divider{border:0;border-top:1px solid var(--taz-border);margin:0}
+.taz-divider--section{border-top:2px solid var(--taz-border);margin:36px 0}
+
+/* ═══ Solo de esta página ═══════════════════════════════════════════════ */
+body{margin:0;background:var(--taz-bg);color:var(--taz-text);font-family:var(--taz-font-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.bar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--taz-surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--taz-border);box-shadow:var(--taz-elev-1)}
+.bar .wrap{display:flex;align-items:center;gap:14px;height:56px}
+.bar .nm{font-family:var(--taz-font-display);font-weight:700;letter-spacing:-.01em}
+.tog{margin-left:auto;font-family:var(--taz-font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--taz-border-strong);background:transparent;color:var(--taz-text-muted);padding:6px 10px;border-radius:4px;cursor:pointer}
+.tog:hover{color:var(--taz-text)}
+.head{padding:48px 0 36px}
+.head p{max-width:66ch;color:var(--taz-text-muted);margin:14px 0 0}
+.blk{padding:40px 0}
+.blk>.wrap>p{max-width:66ch;color:var(--taz-text-muted);margin:10px 0 0;font-size:14.5px}
+.par{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px}
+@media (max-width:960px){.par{grid-template-columns:1fr}}
+/* Re-declarar `color` acá es obligatorio: el escenario redefine --taz-text,
+   pero el color heredado del body ya venía resuelto del tema del visitante. */
+.esc{border-radius:12px;overflow:hidden;border:1px solid var(--taz-border);color:var(--taz-text)}
+.esc__cap{display:flex;align-items:center;gap:9px;padding:9px 16px;font-family:var(--taz-font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:var(--taz-surface);border-bottom:1px solid var(--taz-border);color:var(--taz-text-muted)}
+.esc__cap b{color:var(--taz-text);font-weight:600;letter-spacing:.06em}
+.esc__body{padding:22px;background:var(--taz-bg)}
+.tag{font-family:var(--taz-font-mono);font-size:9.5px;letter-spacing:.1em;padding:2px 7px;border-radius:99px;margin-left:auto}
+.tag--mal{background:var(--taz-danger-bg);color:var(--taz-danger-text)}
+.tag--bien{background:var(--taz-success-bg);color:var(--taz-success-text)}
+.ladder{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0;border-radius:10px;overflow:hidden;border:1px solid var(--taz-border);margin-top:22px}
+.rung{padding:22px 18px;min-height:132px;display:flex;flex-direction:column;justify-content:flex-end;gap:3px}
+.rung b{font-family:var(--taz-font-display);font-size:14px}
+.rung span{font-family:var(--taz-font-mono);font-size:11px;opacity:.72}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-top:24px}
+.note{background:var(--taz-surface);border:1px solid var(--taz-border);border-left:3px solid var(--taz-accent);border-radius:0 8px 8px 0;padding:15px 18px;box-shadow:var(--taz-elev-1)}
+.note h3{font-family:var(--taz-font-display);font-size:15px;font-weight:600;margin:0 0 5px}
+.note p{margin:0;font-size:14px;color:var(--taz-text-muted)}
+.note code{font-family:var(--taz-font-mono);font-size:.88em;background:var(--taz-surface-sunk);padding:1px 5px;border-radius:3px;color:var(--taz-text)}
+.cr{display:grid;grid-template-columns:auto auto 1fr;gap:10px 18px;align-items:center;font-size:14px;margin-top:18px}
+.cr__chip{width:60px;height:30px;border-radius:5px;border:1px solid rgb(0 0 0 / .08)}
+.cr__val{font-family:var(--taz-font-mono);font-variant-numeric:tabular-nums;font-weight:600}
+footer{padding:36px 0 64px;color:var(--taz-text-muted);font-size:14px;border-top:1px solid var(--taz-border)}
+</style>
+
+<div class="bar">
+  <div class="wrap">
+    <svg width="24" height="24" viewBox="0 0 100 100" aria-hidden="true">
+      <g fill="none" stroke-linecap="round">
+        <circle cx="50" cy="50" r="42" stroke="#4477b7" stroke-width="7" pathLength="100" stroke-dasharray="76 24" transform="rotate(-95 50 50)"/>
+        <circle cx="50" cy="50" r="29" stroke="#e8bb2f" stroke-width="9" pathLength="100" stroke-dasharray="60 40" transform="rotate(55 50 50)"/>
+      </g>
+      <circle cx="50" cy="50" r="11" fill="#4477b7"/>
+    </svg>
+    <span class="nm">Taz UI · v1.2 propuesta</span>
+    <button class="tog" id="tog" type="button">Cambiar tema</button>
+  </div>
+</div>
+
+<header class="head">
+  <div class="wrap">
+    <span class="taz-eyebrow">Propuesta para validar · profundidad</span>
+    <h1 style="font-family:var(--taz-font-display);font-size:40px;font-weight:700;letter-spacing:-.03em;line-height:1.06;margin:8px 0 0;max-width:20ch">Le faltaba un plano, no color</h1>
+    <hr class="taz-rule-accent">
+    <p>El tema claro se veía plano por una razón concreta: <b>la página y las tarjetas eran
+    las dos <span class="taz-mono">#FFFFFF</span></b>. Un objeto del mismo color que su fondo
+    no se levanta, y sin relación figura/fondo la interfaz se lee como una sola lámina. Por
+    eso el oscuro se veía mejor definido — ahí sí había dos planos distintos.</p>
+    <p>La corrección no agrega color: agrega una <b>escalera de superficies</b> y sombras
+    reales. Abajo está el mismo bloque de interfaz con los tokens de antes y con los nuevos.</p>
+  </div>
+</header>
+
+<section class="blk">
+  <div class="wrap">
+    <span class="taz-eyebrow">Comparación</span>
+    <h2 class="taz-h2" style="margin-top:6px">El mismo HTML, distintos tokens</h2>
+    <p>No cambió una sola clase entre las dos columnas. Lo único distinto son los valores de
+    las variables.</p>
+
+    <div class="par">
+      <div class="esc esc--antes">
+        <div class="esc__cap"><b>Antes</b> · v1.1 <span class="tag tag--mal">plano</span></div>
+        <div class="esc__body">
+          <div class="taz-stack">
+            <div class="taz-section-head">
+              <div class="taz-section-head__text">
+                <span class="taz-eyebrow">Cartera</span>
+                <h3 class="taz-h3">Expedientes activos</h3>
+              </div>
+              <div class="taz-section-head__actions">
+                <button class="taz-btn taz-btn--ghost taz-btn--sm" type="button">Filtrar</button>
+              </div>
+            </div>
+            <div class="taz-grid">
+              <div class="taz-card"><div class="taz-card__body">
+                <span class="taz-stat__label">Activos</span>
+                <div class="taz-stat__value">1.284</div>
+                <span class="taz-stat__delta">▲ 12,4 %</span>
+                <div class="taz-meter"><i style="width:68%"></i></div>
+              </div></div>
+              <div class="taz-card"><div class="taz-card__body">
+                <span class="taz-stat__label">Recuperación</span>
+                <div class="taz-stat__value">31,6 %</div>
+                <span class="taz-stat__delta taz-muted">promedio</span>
+                <div class="taz-meter"><i style="width:31%"></i></div>
+              </div></div>
+            </div>
+            <div class="taz-table-wrap">
+              <table class="taz-table">
+                <thead><tr><th>Expediente</th><th class="taz-num">Pasivo</th><th>Estado</th></tr></thead>
+                <tbody>
+                  <tr><td class="taz-mono">C-1842-2026</td><td class="taz-num">$ 184.320.500</td><td><span class="taz-badge taz-badge--success"><i class="taz-dot"></i>Vigente</span></td></tr>
+                  <tr><td class="taz-mono">C-0937-2026</td><td class="taz-num">$ 61.940.000</td><td><span class="taz-badge taz-badge--warning"><i class="taz-dot"></i>Por vencer</span></td></tr>
+                  <tr><td class="taz-mono">C-0455-2026</td><td class="taz-num">$ 9.870.400</td><td><span class="taz-badge taz-badge--danger"><i class="taz-dot"></i>Rechazado</span></td></tr>
+                </tbody>
+                <tfoot><tr><td>Total</td><td class="taz-num" colspan="2">$ 256.130.900</td></tr></tfoot>
+              </table>
+            </div>
+            <div class="taz-panel">
+              <div class="taz-panel__head"><h3 class="taz-h3" style="font-size:15px">Nuevo expediente</h3></div>
+              <div class="taz-panel__body taz-stack">
+                <div class="taz-field">
+                  <label class="taz-label">RUT del deudor</label>
+                  <input class="taz-input taz-mono" type="text" value="76.421.880-K">
+                  <span class="taz-hint">Con puntos y guion.</span>
+                </div>
+                <div class="taz-field">
+                  <label class="taz-label">Tribunal</label>
+                  <select class="taz-select"><option>1.º Juzgado Civil de Temuco</option></select>
+                </div>
+                <div class="taz-well taz-mono" style="font-size:13px">Pasivo verificado · $ 184.320.500</div>
+              </div>
+            </div>
+            <div class="taz-alert taz-alert--warning">
+              <span class="taz-alert__icon">!</span>
+              <div><p class="taz-alert__title">Plazo próximo a vencer</p>Quedan 6 días hábiles.</div>
+            </div>
+            <div class="taz-toast">
+              <span class="taz-toast__icon">✓</span>
+              <div><p class="taz-toast__title">Informe emitido</p><div class="taz-toast__body">Disponible para descarga.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="esc esc--despues">
+        <div class="esc__cap"><b>Después</b> · v1.2 <span class="tag tag--bien">con planos</span></div>
+        <div class="esc__body">
+          <div class="taz-stack">
+            <div class="taz-section-head taz-section-head--accent">
+              <div class="taz-section-head__text">
+                <span class="taz-eyebrow">Cartera</span>
+                <h3 class="taz-h3">Expedientes activos</h3>
+              </div>
+              <div class="taz-section-head__actions">
+                <button class="taz-btn taz-btn--ghost taz-btn--sm" type="button">Filtrar</button>
+              </div>
+            </div>
+            <div class="taz-grid">
+              <div class="taz-card"><div class="taz-card__body">
+                <span class="taz-stat__label">Activos</span>
+                <div class="taz-stat__value">1.284</div>
+                <span class="taz-stat__delta">▲ 12,4 %</span>
+                <div class="taz-meter"><i style="width:68%"></i></div>
+              </div></div>
+              <div class="taz-card"><div class="taz-card__body">
+                <span class="taz-stat__label">Recuperación</span>
+                <div class="taz-stat__value">31,6 %</div>
+                <span class="taz-stat__delta taz-muted">promedio</span>
+                <div class="taz-meter"><i style="width:31%"></i></div>
+              </div></div>
+            </div>
+            <div class="taz-table-wrap">
+              <table class="taz-table">
+                <thead><tr><th>Expediente</th><th class="taz-num">Pasivo</th><th>Estado</th></tr></thead>
+                <tbody>
+                  <tr><td class="taz-mono">C-1842-2026</td><td class="taz-num">$ 184.320.500</td><td><span class="taz-badge taz-badge--success"><i class="taz-dot"></i>Vigente</span></td></tr>
+                  <tr><td class="taz-mono">C-0937-2026</td><td class="taz-num">$ 61.940.000</td><td><span class="taz-badge taz-badge--warning"><i class="taz-dot"></i>Por vencer</span></td></tr>
+                  <tr><td class="taz-mono">C-0455-2026</td><td class="taz-num">$ 9.870.400</td><td><span class="taz-badge taz-badge--danger"><i class="taz-dot"></i>Rechazado</span></td></tr>
+                </tbody>
+                <tfoot><tr><td>Total</td><td class="taz-num" colspan="2">$ 256.130.900</td></tr></tfoot>
+              </table>
+            </div>
+            <div class="taz-panel">
+              <div class="taz-panel__head"><h3 class="taz-h3" style="font-size:15px">Nuevo expediente</h3></div>
+              <div class="taz-panel__body taz-stack">
+                <div class="taz-field">
+                  <label class="taz-label">RUT del deudor</label>
+                  <input class="taz-input taz-mono" type="text" value="76.421.880-K">
+                  <span class="taz-hint">Con puntos y guion.</span>
+                </div>
+                <div class="taz-field">
+                  <label class="taz-label">Tribunal</label>
+                  <select class="taz-select"><option>1.º Juzgado Civil de Temuco</option></select>
+                </div>
+                <div class="taz-well taz-mono" style="font-size:13px">Pasivo verificado · $ 184.320.500</div>
+              </div>
+            </div>
+            <div class="taz-alert taz-alert--warning">
+              <span class="taz-alert__icon">!</span>
+              <div><p class="taz-alert__title">Plazo próximo a vencer</p>Quedan 6 días hábiles.</div>
+            </div>
+            <div class="taz-toast">
+              <span class="taz-toast__icon">✓</span>
+              <div><p class="taz-toast__title">Informe emitido</p><div class="taz-toast__body">Disponible para descarga.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><hr class="taz-divider--section"></div>
+
+<section class="blk">
+  <div class="wrap">
+    <span class="taz-eyebrow">El mecanismo</span>
+    <h2 class="taz-h2" style="margin-top:6px">Cuatro planos, no dos</h2>
+    <p>Cada peldaño se distingue del anterior por luminancia, no por tono. Es la misma idea
+    que ya funcionaba en el tema oscuro, trasladada al claro.</p>
+
+    <div class="ladder">
+      <div class="rung" style="background:#d8e0ec;color:#2a313a">
+        <b>Pozo</b><span>--taz-surface-sunk</span><span>#D8E0EC · L 0,740</span>
+        <span style="opacity:.6">encabezados de tabla, afijos</span>
+      </div>
+      <div class="rung" style="background:#eaeef5;color:#2a313a">
+        <b>Lienzo</b><span>--taz-bg</span><span>#EAEEF5 · L 0,852</span>
+        <span style="opacity:.6">el fondo de la página</span>
+      </div>
+      <div class="rung" style="background:#fff;color:#2a313a;box-shadow:0 1px 2px rgb(29 42 68 / .07)">
+        <b>Superficie</b><span>--taz-surface</span><span>#FFFFFF · L 1,000</span>
+        <span style="opacity:.6">tarjetas, barras, paneles</span>
+      </div>
+      <div class="rung" style="background:#fff;color:#2a313a;box-shadow:0 2px 4px rgb(29 42 68 / .06), 0 12px 28px -6px rgb(29 42 68 / .16)">
+        <b>Elevada</b><span>--taz-surface-raised</span><span>#FFFFFF + sombra</span>
+        <span style="opacity:.6">diálogos, menús, avisos</span>
+      </div>
+    </div>
+
+    <div class="taz-alert taz-alert--info" style="margin-top:22px">
+      <span class="taz-alert__icon">✎</span>
+      <div>
+        <p class="taz-alert__title">Corregido tras tu observación</p>
+        El primer borrador dejaba el pozo en <span class="taz-mono">#E2E8F1</span>, a solo
+        <b>5,9 %</b> del lienzo: el encabezado de una tabla se leía como un agujero a la
+        página en vez de una banda propia. Ahora está en <span class="taz-mono">#D8E0EC</span>,
+        a <b>13 %</b>, con los tres saltos parejos. En el bloque de comparación de arriba ya
+        está aplicado.
+      </div>
+    </div>
+
+    <h3 class="taz-h3" style="margin-top:34px">La misma tabla, sobre el lienzo</h3>
+    <p style="max-width:66ch;color:var(--taz-text-muted);margin:8px 0 0;font-size:14.5px">
+      Las dos están apoyadas sobre <span class="taz-mono">#EAEEF5</span>, que es la situación
+      real donde se notaba el problema.</p>
+    <div class="par" style="margin-top:18px">
+      <div class="esc esc--despues" style="--taz-surface-sunk:#e2e8f1;--taz-text-muted:#6c7788">
+        <div class="esc__cap"><b>Borrador</b> · pozo #E2E8F1 <span class="tag tag--mal">5,9 % · texto 3,96:1</span></div>
+        <div class="esc__body">
+          <div class="taz-table-wrap">
+            <table class="taz-table" style="--taz-border-strong:#d5dce6">
+              <thead><tr><th>Expediente</th><th>Deudor</th><th class="taz-num">Pasivo</th></tr></thead>
+              <tbody>
+                <tr><td class="taz-mono">C-1842-2026</td><td>Comercial Andes Ltda.</td><td class="taz-num">$ 184.320.500</td></tr>
+                <tr><td class="taz-mono">C-0937-2026</td><td>Transportes Bío Sur SpA</td><td class="taz-num">$ 61.940.000</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="esc esc--despues">
+        <div class="esc__cap"><b>Corregido</b> · pozo #D8E0EC <span class="tag tag--bien">13 % · texto 5,09:1</span></div>
+        <div class="esc__body">
+          <div class="taz-table-wrap">
+            <table class="taz-table">
+              <thead><tr><th>Expediente</th><th>Deudor</th><th class="taz-num">Pasivo</th></tr></thead>
+              <tbody>
+                <tr><td class="taz-mono">C-1842-2026</td><td>Comercial Andes Ltda.</td><td class="taz-num">$ 184.320.500</td></tr>
+                <tr><td class="taz-mono">C-0937-2026</td><td>Transportes Bío Sur SpA</td><td class="taz-num">$ 61.940.000</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note">
+        <h3>La sombra va teñida, no negra</h3>
+        <p>Sobre un lienzo frío una sombra de negro puro se ve sucia. Las cuatro capas usan
+        <code>rgb(29 42 68)</code>, el azul pizarra de la marca, y van en dos planos: una de
+        contacto y otra de ambiente.</p>
+      </div>
+      <div class="note">
+        <h3>En oscuro, lo hundido sube</h3>
+        <p>Bajo el lienzo oscuro no queda recorrido antes del negro, así que el peldaño
+        hundido va <em>más claro</em> que la superficie: lienzo <code>#0F1319</code> →
+        superficie <code>#1A212B</code> → pozo <code>#262F3B</code> → elevada
+        <code>#2F3945</code>. Además la sombra casi no se ve en oscuro, así que ahí la
+        separación la hacen los planos y el borde.</p>
+      </div>
+      <div class="note">
+        <h3>Encabezado de sección</h3>
+        <p><code>.taz-section-head</code> cierra con línea de 2 px. La variante
+        <code>--accent</code> arranca esa línea en dorado los primeros 44 px. Una por
+        pantalla; si va en cada título, deja de significar algo.</p>
+      </div>
+      <div class="note">
+        <h3>Nadie hereda el color</h3>
+        <p>Todo componente con texto declara <code>color: var(--taz-text)</code>.
+        <code>color</code> se resuelve una sola vez donde se escribe y baja como valor
+        concreto: si un contenedor redefine el token más abajo, el texto heredado se queda
+        con el color del ancestro. Así es como aparece texto claro sobre fondo claro.</p>
+      </div>
+      <div class="note">
+        <h3>Panel y pozo</h3>
+        <p><code>.taz-panel</code> secciona una vista larga con cabecera propia.
+        <code>.taz-well</code> hunde un bloque dentro de una superficie: totales, resúmenes,
+        cualquier cosa que deba leerse como aparte.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><hr class="taz-divider--section"></div>
+
+<section class="blk">
+  <div class="wrap">
+    <span class="taz-eyebrow">Corrección de accesibilidad</span>
+    <h2 class="taz-h2" style="margin-top:6px">Dos cosas que no cumplían</h2>
+    <p>La WCAG 2.1 pide 3:1 para el contorno visual de un control (criterio 1.4.11) y 4,5:1
+    para texto. El borde de los campos daba menos de la mitad, y el texto del encabezado de
+    tabla se quedaba corto porque cae sobre el peldaño hundido, no sobre blanco. Los valores
+    se calculan en vivo contra el fondo real de cada caso.</p>
+    <div class="cr" id="cr"></div>
+    <p style="margin-top:18px">Ninguna de las dos era solo norma: entre las dos explican
+    buena parte de por qué la interfaz se veía desdibujada.</p>
+  </div>
+</section>
+
+<div class="wrap"><hr class="taz-divider--section"></div>
+
+<section class="blk">
+  <div class="wrap">
+    <span class="taz-eyebrow">Verificación</span>
+    <h2 class="taz-h2" style="margin-top:6px">La propuesta en oscuro</h2>
+    <p>Mismos tokens nuevos, tema oscuro. Los planos siguen separándose y el dorado sigue
+    siendo el único acento.</p>
+    <div class="esc esc--oscuro" style="margin-top:22px">
+      <div class="esc__cap"><b>Después</b> · oscuro <span class="tag tag--bien">sin cambios de rol</span></div>
+      <div class="esc__body">
+        <div class="taz-stack">
+          <div class="taz-section-head taz-section-head--accent">
+            <div class="taz-section-head__text">
+              <span class="taz-eyebrow">Cartera</span>
+              <h3 class="taz-h3">Expedientes activos</h3>
+            </div>
+            <div class="taz-section-head__actions">
+              <button class="taz-btn taz-btn--ghost taz-btn--sm" type="button">Filtrar</button>
+              <button class="taz-btn taz-btn--accent taz-btn--sm" type="button">Emitir informe</button>
+            </div>
+          </div>
+          <div class="taz-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+            <div class="taz-card"><div class="taz-card__body">
+              <span class="taz-stat__label">Activos</span>
+              <div class="taz-stat__value">1.284</div>
+              <span class="taz-stat__delta">▲ 12,4 %</span>
+              <div class="taz-meter"><i style="width:68%"></i></div>
+            </div></div>
+            <div class="taz-card"><div class="taz-card__body">
+              <span class="taz-stat__label">Recuperación</span>
+              <div class="taz-stat__value">31,6 %</div>
+              <span class="taz-stat__delta taz-muted">promedio</span>
+              <div class="taz-meter"><i style="width:31%"></i></div>
+            </div></div>
+            <div class="taz-card taz-card--raised"><div class="taz-card__body">
+              <span class="taz-stat__label">Por vencer</span>
+              <div class="taz-stat__value">7</div>
+              <span class="taz-stat__delta taz-muted">10 días hábiles</span>
+              <div class="taz-meter"><i style="width:22%"></i></div>
+            </div></div>
+          </div>
+          <div class="taz-table-wrap">
+            <table class="taz-table">
+              <thead><tr><th>Expediente</th><th>Deudor</th><th class="taz-num">Pasivo</th><th>Estado</th></tr></thead>
+              <tbody>
+                <tr><td class="taz-mono">C-1842-2026</td><td>Comercial Andes Ltda.</td><td class="taz-num">$ 184.320.500</td><td><span class="taz-badge taz-badge--success"><i class="taz-dot"></i>Vigente</span></td></tr>
+                <tr><td class="taz-mono">C-0937-2026</td><td>Transportes Bío Sur SpA</td><td class="taz-num">$ 61.940.000</td><td><span class="taz-badge taz-badge--warning"><i class="taz-dot"></i>Por vencer</span></td></tr>
+              </tbody>
+              <tfoot><tr><td colspan="2">Total</td><td class="taz-num" colspan="2">$ 246.260.500</td></tr></tfoot>
+            </table>
+          </div>
+          <div class="taz-row" style="align-items:stretch">
+            <div class="taz-field" style="flex:1;min-width:220px">
+              <label class="taz-label">RUT del deudor</label>
+              <input class="taz-input taz-mono" type="text" value="76.421.880-K">
+            </div>
+            <div class="taz-field" style="flex:1;min-width:220px">
+              <label class="taz-label">Tribunal</label>
+              <select class="taz-select"><option>1.º Juzgado Civil de Temuco</option></select>
+            </div>
+          </div>
+          <div class="taz-toast">
+            <span class="taz-toast__icon">✓</span>
+            <div><p class="taz-toast__title">Informe emitido</p><div class="taz-toast__body">Disponible para descarga.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap taz-row">
+    <span>Si te convence, lo subo como v1.2 y actualizo el Storybook.</span>
+    <span class="taz-mono taz-muted" style="margin-left:auto;font-size:12px">tokens.css · taz-ui.css · taz-shell.css</span>
+  </div>
+</footer>
+
+<script>
+const lin = (c) => (c /= 255) <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+const lum = (hex) => {
+  const n = parseInt(hex.slice(1), 16);
+  return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
+};
+const ratio = (a, b) => {
+  const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+};
+
+const FILAS = [
+  ['#c3c9d3', '#ffffff', 3, 'Borde de campo, antes', 'v1.1 sobre blanco — no cumple'],
+  ['#878fa0', '#ffffff', 3, 'Borde de campo, ahora', 'v1.2 sobre blanco — cumple 1.4.11'],
+  ['#6c7788', '#e2e8f1', 4.5, 'Texto del encabezado, borrador', 'slate 500 sobre el pozo — no cumple'],
+  ['#525c6b', '#d8e0ec', 4.5, 'Texto del encabezado, ahora', 'slate 600 sobre el pozo — cumple AA'],
+];
+
+document.getElementById('cr').innerHTML = FILAS.map(([hex, fondo, min, nombre, nota]) => {
+  const r = ratio(hex, fondo);
+  const ok = r >= min;
+  return `
+    <div class="cr__chip" style="background:${fondo};display:grid;place-items:center">
+      <span style="width:34px;height:14px;border-radius:3px;background:${hex}"></span>
+    </div>
+    <div class="cr__val" style="color:${ok ? 'var(--taz-success-text)' : 'var(--taz-danger-text)'}">${r.toFixed(2)}:1</div>
+    <div><b>${nombre}</b> <span class="taz-mono taz-muted">${hex.toUpperCase()}</span>
+      <span class="taz-muted"> — ${nota} · mínimo ${min}:1</span></div>`;
+}).join('');
+
+const raiz = document.documentElement;
+document.getElementById('tog').addEventListener('click', () => {
+  const sysDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const actual = raiz.dataset.theme || (sysDark ? 'dark' : 'light');
+  raiz.dataset.theme = actual === 'dark' ? 'light' : 'dark';
+});
+</script>

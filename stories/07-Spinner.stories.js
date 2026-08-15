@@ -25,6 +25,24 @@ export const Espiral = {
     ${spiral(96, { spin: true })}
   </div>
 
+  <div class="taz-alert taz-alert--info" style="margin-top:28px">
+    <span class="taz-alert__icon">i</span>
+    <div><p class="taz-alert__title">Por qué gira parejo y no a saltos</p>
+    El timing es <code class="taz-mono">linear</code>: cualquier curva de aceleración sobre un
+    giro cíclico llega a velocidad cero al cerrar la vuelta y se ve una detención en cada
+    ciclo. Y los períodos son distintos —1,6 s y 2,3 s— porque con el mismo período los dos
+    arcos se realinean en cada vuelta y eso se percibe como un latido.</div>
+  </div>
+
+  <div style="margin-top:28px">
+    <span class="taz-eyebrow">Ritmos</span>
+    <div class="taz-row" style="gap:34px;margin-top:12px;align-items:center">
+      <span style="text-align:center">${spiral(44, { spin: true, ritmo: 'slow' })}<br><span class="taz-mono taz-muted" style="font-size:11px">--slow</span></span>
+      <span style="text-align:center">${spiral(44, { spin: true })}<br><span class="taz-mono taz-muted" style="font-size:11px">normal</span></span>
+      <span style="text-align:center">${spiral(44, { spin: true, ritmo: 'fast' })}<br><span class="taz-mono taz-muted" style="font-size:11px">--fast</span></span>
+    </div>
+  </div>
+
   <div style="margin-top:34px">
     <span class="taz-eyebrow">Monocromo · hereda currentColor</span>
     <div class="taz-row" style="gap:28px;margin-top:12px;align-items:center">
@@ -41,7 +59,7 @@ export const Espiral = {
         <svg class="taz-spinner" width="15" height="15" viewBox="0 0 100 100" aria-hidden="true">
           <circle class="taz-spinner__outer" cx="50" cy="50" r="42" fill="none" stroke="currentColor"
                   stroke-width="12" stroke-linecap="round" pathLength="100"
-                  stroke-dasharray="55 45" transform="rotate(-95 50 50)"/>
+                  stroke-dasharray="55 45" stroke-dashoffset="26"/>
         </svg>
         Procesando
       </button>
